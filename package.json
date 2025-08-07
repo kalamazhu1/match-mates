@@ -1,0 +1,42 @@
+{
+  "name": "match-mates",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test:supabase": "node scripts/test-supabase-connection.js",
+    "db:deploy": "./scripts/deploy-schema-cli.sh deploy",
+    "db:verify": "./scripts/deploy-schema-cli.sh verify",
+    "db:deploy-verify": "./scripts/deploy-schema-cli.sh deploy-and-verify",
+    "db:validate": "node scripts/validate-schema.js",
+    "db:manual": "./scripts/deploy-schema-cli.sh manual"
+  },
+  "dependencies": {
+    "@stripe/stripe-js": "^7.8.0",
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.53.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.536.0",
+    "next": "15.4.6",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "stripe": "^18.4.0",
+    "tailwind-merge": "^3.3.1",
+    "zod": "^4.0.15"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20.19.9",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.4.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

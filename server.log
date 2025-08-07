@@ -1,0 +1,791 @@
+
+> tennis-connect@0.1.0 dev
+> next dev --turbopack
+
+ ⚠ Warning: Found multiple lockfiles. Selecting /Users/kalamazhu/package-lock.json.
+   Consider removing the lockfiles at:
+   * /Users/kalamazhu/match-mates/package-lock.json
+
+   ▲ Next.js 15.4.6 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.86.26:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Compiled middleware in 168ms
+ ✓ Ready in 1339ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1966ms
+ GET / 200 in 2256ms
+ GET / 200 in 269ms
+ ✓ Compiled /_not-found/page in 196ms
+ GET /auth/signup 404 in 259ms
+ GET /auth/signup 404 in 62ms
+ GET / 200 in 543ms
+ ○ Compiling /events/create ...
+ ✓ Compiled /events/create in 1055ms
+ GET /events/create 200 in 1170ms
+ ✓ Compiled /api/events in 289ms
+Event creation error: Error: Your project's URL and Key are required to create a Supabase client!
+
+Check your Supabase project's API settings to find these values
+
+https://supabase.com/dashboard/project/_/settings/api
+    at <unknown> (https://supabase.com/dashboard/project/_/settings/api)
+    at createServerClient (../../src/createServerClient.ts:139:10)
+    at createClient (src/lib/supabase/server.ts:7:26)
+    at async POST (src/app/api/events/route.ts:15:21)
+   5 |   const cookieStore = await cookies()
+   6 |
+>  7 |   return createServerClient(
+     |                          ^
+   8 |     process.env.NEXT_PUBLIC_SUPABASE_URL!,
+   9 |     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  10 |     {
+ POST /api/events 500 in 512ms
+ ✓ Compiled middleware in 0ms
+ GET /events/create 200 in 151ms
+ GET /events/create 200 in 49ms
+ ✓ Compiled in 45ms
+ ✓ Compiled /api/events/mock in 125ms
+Mock event creation error: Error [ZodError]: [
+  {
+    "code": "custom",
+    "path": [
+      "date_start"
+    ],
+    "message": "Start date must be a valid future date"
+  },
+  {
+    "code": "custom",
+    "path": [
+      "registration_deadline"
+    ],
+    "message": "Registration deadline must be a valid future date"
+  }
+]
+    at POST (src/app/api/events/mock/route.ts:11:44)
+   9 |     
+  10 |     // Validate the input data
+> 11 |     const validatedData = createEventSchema.parse(body)
+     |                                            ^
+  12 |     
+  13 |     // Mock authentication check - in real app this would check Supabase auth
+  14 |     const mockUser = {
+ POST /api/events/mock 400 in 271ms
+ POST /api/events/mock 201 in 1059ms
+ ✓ Compiled in 78ms
+ POST /api/events/mock 201 in 1140ms
+ ✓ Compiled /events/[id] in 210ms
+ GET /events/event-1754527662894 200 in 892ms
+ GET /dashboard 404 in 299ms
+ GET /dashboard 404 in 109ms
+ GET /events/event-1754527662894 200 in 703ms
+ GET / 200 in 314ms
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ✓ Compiled in 85ms
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ⨯ ./src/components/ui/index.ts:6:1
+Module not found: Can't resolve './TennisSelect'
+[0m [90m 4 |[39m [36mexport[39m { [33mTextarea[39m } [36mfrom[39m [32m'./Textarea'[39m
+ [90m 5 |[39m [36mexport[39m { [33mDateTimeInput[39m } [36mfrom[39m [32m'./DateTimeInput'[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mexport[39m { [33mTennisSelect[39m[33m,[39m [33mNTRP_LEVELS[39m[33m,[39m [33mEVENT_TYPES[39m[33m,[39m [33mTOURNAMENT_FORMATS[39m[33m,[39m [33mSF_LOCATIONS[39m } [36mfrom[39m [32m'./TennisSelect'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mexport[39m { [33mCard[39m[33m,[39m [33mCardHeader[39m[33m,[39m [33mCardTitle[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m'./Card'[39m
+ [90m 8 |[39m [36mexport[39m { [33mFormSection[39m } [36mfrom[39m [32m'./FormSection'[39m
+ [90m 9 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/index.ts [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Client Component Browser]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/index.ts [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Client Component SSR]
+    ./src/components/events/EventCreationForm.tsx [Server Component]
+    ./src/app/events/create/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ✓ Compiled in 109ms
+   Reload env: .env.local
+ ✓ Compiled middleware in 14ms
+ ✓ Compiled in 7ms
+ ✓ Compiled middleware in 3ms
+ ✓ Compiled middleware in 5ms
+ ✓ Compiled middleware in 7ms
+ ✓ Compiled in 76ms
+ ✓ Compiled middleware in 10ms
+ ✓ Compiled middleware in 2ms
+ ✓ Compiled middleware in 3ms
+ ✓ Compiled middleware in 9ms
+ ✓ Compiled in 63ms
+ ✓ Compiled middleware in 2ms
+ ✓ Compiled middleware in 2ms
+ ✓ Compiled middleware in 2ms
+ ✓ Compiled in 43ms
+ ✓ Compiled in 213ms
+ ✓ Compiled middleware in 3ms
+ ✓ Compiled in 120ms
+ ✓ Compiled middleware in 0ms
+ ✓ Compiled middleware in 4ms
+ ✓ Compiled in 51ms
+ ✓ Compiled middleware in 30ms
+ ✓ Compiled middleware in 25ms
+ ✓ Compiled in 98ms
+ ✓ Compiled middleware in 1ms
+ ✓ Compiled in 11ms
+ ✓ Compiled middleware in 3ms
+ ✓ Compiled in 133ms
+ ✓ Compiled in 121ms
+ ✓ Compiled in 50ms
+ ✓ Compiled middleware in 0ms
+ ✓ Compiled in 89ms
