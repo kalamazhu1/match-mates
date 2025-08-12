@@ -40,7 +40,7 @@ export async function GET(
       .from('registrations')
       .select(`
         *,
-        user:users(name, email, ntrp_level)
+        user:users!user_id(name, email, ntrp_level)
       `)
       .eq('event_id', eventId)
       .neq('status', 'cancelled')
@@ -66,9 +66,11 @@ export async function GET(
       eligible: false,
       reason: ''
     }
+    let currentUser = null
 
     try {
       const { data: { user }, error: authError } = await supabase.auth.getUser()
+      currentUser = user
       
       if (user && !authError) {
         // Get user's registration for this event
@@ -129,10 +131,11 @@ export async function GET(
       console.log('User not authenticated')
     }
 
-    // Prepare response data
+    // Prepare response data with safe organizer handling
     const responseData = {
       event: {
         ...event,
+        organizer: event.organizer || { name: 'Unknown', email: 'Unknown' }, // Fallback for missing organizer
         registration_stats: {
           total_registrations: totalRegistrations,
           approved_registrations: approvedRegistrations,
@@ -145,7 +148,7 @@ export async function GET(
       user_registration: userRegistration,
       can_register: canRegister,
       registration_eligibility: registrationEligibility,
-      registrations: event.organizer_id === userRegistration?.user_id ? registrations : null // Only show full list to organizer
+      registrations: event.organizer_id === currentUser?.id ? registrations : null // Only show full list to organizer
     }
 
     return NextResponse.json(responseData)
@@ -157,6 +160,14 @@ export async function GET(
       { status: 500 }
     )
   }
+}
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: EventParams
+) {
+  // Use the same logic as PUT for partial updates
+  return PUT(request, { params })
 }
 
 export async function PUT(

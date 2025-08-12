@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState, useCallback } from 'react'
+import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { User, Session } from '@supabase/supabase-js'
 
@@ -43,29 +43,71 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
+  
+  // Use a ref to track active fetch promises to prevent duplicates
+  const activeFetches = useRef<Map<string, Promise<void>>>(new Map())
 
   const fetchProfile = useCallback(async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', userId)
-        .single()
-
-      if (error) {
-        if (error.code !== 'PGRST116') {
-          console.error('Error fetching profile:', error)
-        }
-        setProfile(null)
-        return
-      }
-
-      setProfile(data)
-    } catch (error) {
-      console.error('Profile fetch error:', error)
-      setProfile(null)
+    // Check if there's already an active fetch for this user
+    const existingFetch = activeFetches.current.get(userId)
+    if (existingFetch) {
+      console.log('⏳ Profile fetch already in progress, waiting for completion...')
+      return existingFetch
     }
-  }, [supabase])
+
+    // Create the fetch promise with timeout
+    const fetchPromise = (async () => {
+      try {
+        console.log('Fetching profile for user:', userId)
+        console.log('Current auth state:', { 
+          hasSession: !!session, 
+          sessionUserId: session?.user?.id,
+          requestedUserId: userId,
+          idsMatch: session?.user?.id === userId 
+        })
+        
+        // Verify we have an active session before querying
+        if (!session?.user || session.user.id !== userId) {
+          console.log('⚠️ No valid session or user ID mismatch - skipping profile fetch')
+          setProfile(null)
+          return
+        }
+        
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', userId)
+          .single()
+        
+        if (error) {
+          console.log('Profile fetch error:', error.message, error.code)
+          if (error.code === 'PGRST116') {
+            console.log('✅ User profile not found - this is normal for new users')
+          } else if (error.code === 'PGRST301') {
+            console.log('⚠️ RLS policy blocked access - check authentication')
+          } else {
+            console.error('Database error fetching profile:', error)
+          }
+          setProfile(null)
+          return
+        }
+
+        console.log('✅ Profile fetched successfully:', data?.name || data?.email)
+        setProfile(data)
+        
+      } catch (error) {
+        console.error('Profile fetch error:', error)
+        setProfile(null)
+      } finally {
+        // Clean up the active fetch
+        activeFetches.current.delete(userId)
+      }
+    })()
+
+    // Store the promise to prevent duplicates
+    activeFetches.current.set(userId, fetchPromise)
+    return fetchPromise
+  }, [supabase, session])
 
   const refreshProfile = async () => {
     if (user?.id) {
@@ -117,6 +159,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
       async (event, session) => {
         console.log('Auth state changed:', event, session?.user?.email)
         
+        // Don't show loading spinner for token refreshes and minor events
+        if (['TOKEN_REFRESHED'].includes(event)) {
+          // Just update the session without loading states
+          setSession(session)
+          setUser(session?.user ?? null)
+          return
+        }
+        
         setSession(session)
         setUser(session?.user ?? null)
 
@@ -126,14 +176,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
           setProfile(null)
         }
 
-        setLoading(false)
+        // Only set loading to false for significant events
+        if (['SIGNED_IN', 'SIGNED_OUT', 'INITIAL_SESSION'].includes(event)) {
+          setLoading(false)
+        }
       }
     )
 
     return () => {
       subscription.unsubscribe()
     }
-  }, [supabase.auth, fetchProfile])
+  }, [supabase.auth])
 
   const value = {
     user,

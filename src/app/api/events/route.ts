@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     const eventData = {
       ...validatedData,
       organizer_id: user.id,
-      status: 'draft' as const,
+      status: 'open' as const, // All events are automatically published as open
       // Convert empty strings to null for optional URL fields
       whatsapp_group: validatedData.whatsapp_group || null,
       telegram_group: validatedData.telegram_group || null,
@@ -103,6 +103,7 @@ export async function GET(request: NextRequest) {
     // Optional query parameters for filtering
     const status = searchParams.get('status')
     const eventType = searchParams.get('type')
+    const organizer = searchParams.get('organizer')
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : 10
     const offset = searchParams.get('offset') ? parseInt(searchParams.get('offset')!) : 0
 
@@ -110,12 +111,20 @@ export async function GET(request: NextRequest) {
     let query = supabase
       .from('events')
       .select('*')
-      .eq('status', 'open') // Only show open events by default
       .order('date_start', { ascending: true })
       .range(offset, offset + limit - 1)
 
     // Apply filters if provided
-    if (status && status !== 'open') {
+    if (organizer) {
+      // When filtering by organizer, show all their events regardless of status
+      query = query.eq('organizer_id', organizer)
+    } else {
+      // For general browsing, only show active events
+      query = query.in('status', ['open', 'full'])
+    }
+
+    if (status && !organizer) {
+      // Only apply status filter if not filtering by organizer
       query = query.eq('status', status)
     }
     
@@ -133,7 +142,25 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    return NextResponse.json({ events })
+    // Add registration stats for each event
+    const eventsWithStats = await Promise.all(
+      (events || []).map(async (event) => {
+        const { count: approvedCount } = await supabase
+          .from('registrations')
+          .select('*', { count: 'exact', head: true })
+          .eq('event_id', event.id)
+          .eq('status', 'approved')
+
+        return {
+          ...event,
+          registration_stats: {
+            approved_registrations: approvedCount || 0
+          }
+        }
+      })
+    )
+
+    return NextResponse.json({ events: eventsWithStats })
 
   } catch (error) {
     console.error('Events fetch error:', error)

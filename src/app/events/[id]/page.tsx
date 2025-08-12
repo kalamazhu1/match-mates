@@ -5,6 +5,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Header } from '@/components/layout/Header'
 import { RegistrationButton } from '@/components/events/RegistrationButton'
+import { EventAdminActions } from '@/components/events/EventAdminActions'
 import { useAuth } from '@/contexts/AuthContext'
 import { Event, Registration } from '@/types'
 
@@ -76,7 +77,7 @@ export default function EventPage({ params }: EventPageProps) {
     if (eventId) {
       fetchEventData()
     }
-  }, [eventId, user])
+  }, [eventId]) // Only fetch on initial load or when event ID changes
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -97,7 +98,6 @@ export default function EventPage({ params }: EventPageProps) {
     switch (status) {
       case 'open': return 'bg-green-100 text-green-800'
       case 'full': return 'bg-yellow-100 text-yellow-800'
-      case 'draft': return 'bg-gray-100 text-gray-800'
       case 'in_progress': return 'bg-blue-100 text-blue-800'
       case 'completed': return 'bg-purple-100 text-purple-800'
       case 'cancelled': return 'bg-red-100 text-red-800'
@@ -146,6 +146,7 @@ export default function EventPage({ params }: EventPageProps) {
   }
 
   const { event, user_registration, can_register, registration_eligibility } = eventData
+  const isOwner = user?.id === event.organizer_id
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -176,14 +177,21 @@ export default function EventPage({ params }: EventPageProps) {
             </div>
 
             <div className="mt-6 lg:mt-0 lg:ml-8 lg:w-80">
-              <RegistrationButton
-                eventId={event.id}
-                event={event}
-                userRegistration={user_registration}
-                canRegister={can_register}
-                registrationEligibility={registration_eligibility}
-                onRegistrationChange={fetchEventData}
-              />
+              {isOwner ? (
+                <EventAdminActions 
+                  event={event} 
+                  onEventUpdate={fetchEventData}
+                />
+              ) : (
+                <RegistrationButton
+                  eventId={event.id}
+                  event={event}
+                  userRegistration={user_registration}
+                  canRegister={can_register}
+                  registrationEligibility={registration_eligibility}
+                  onRegistrationChange={fetchEventData}
+                />
+              )}
             </div>
           </div>
         </div>
