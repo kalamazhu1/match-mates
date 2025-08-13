@@ -113,19 +113,26 @@ export function SignupForm() {
   }
 
   const createUserProfile = async (userId: string) => {
-    const { error } = await supabase
-      .from('users')
-      .insert([{
-        id: userId,
+    const response = await fetch('/api/auth/create-profile', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: userId,
         email: formData.email,
         name: formData.name.trim(),
         ntrp_level: formData.ntrp_level,
         phone: formData.phone.trim() || null
-      }])
+      })
+    })
 
-    if (error) {
-      console.error('Error creating user profile:', error)
-      throw new Error('Failed to create user profile')
+    if (!response.ok) {
+      const errorData = await response.json()
+      console.error('Error creating user profile:', errorData)
+      console.error('API Response status:', response.status)
+      console.error('Full error details:', errorData)
+      throw new Error(errorData.error || 'Failed to create user profile')
     }
   }
 
@@ -133,6 +140,15 @@ export function SignupForm() {
     e.preventDefault()
     
     if (!validateForm()) {
+      return
+    }
+
+    // Check if Supabase is properly configured
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    if (!supabaseUrl || supabaseUrl.includes('your-project-id') || supabaseUrl.includes('placeholder')) {
+      setErrors({ 
+        submit: '⚠️ Demo Mode: Supabase not configured yet. Please set up your Supabase project to test signup functionality. See README.md for setup instructions.' 
+      })
       return
     }
 

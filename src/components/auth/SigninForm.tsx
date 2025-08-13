@@ -73,6 +73,15 @@ export function SigninForm() {
       return
     }
 
+    // Check if Supabase is properly configured
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    if (!supabaseUrl || supabaseUrl.includes('your-project-id') || supabaseUrl.includes('placeholder')) {
+      setErrors({ 
+        submit: '⚠️ Demo Mode: Supabase not configured yet. Please set up your Supabase project to test signin functionality. See README.md for setup instructions.' 
+      })
+      return
+    }
+
     setLoading(true)
     setErrors({})
 
@@ -104,30 +113,11 @@ export function SigninForm() {
         return
       }
 
-      // Check if user profile exists
-      if (authData.user) {
-        const { data: profile, error: profileError } = await supabase
-          .from('users')
-          .select('id')
-          .eq('id', authData.user.id)
-          .single()
-
-        if (profileError && profileError.code !== 'PGRST116') {
-          // Error other than "not found"
-          console.error('Profile check error:', profileError)
-          setErrors({ submit: 'Account verification failed. Please contact support.' })
-          return
-        }
-
-        if (!profile) {
-          // User exists in auth but not in users table - redirect to signup completion
-          router.push('/auth/signup?step=profile')
-          return
-        }
-      }
-
       // Successful login - redirect to intended page or dashboard
+      console.log('Signin successful for user:', authData.user?.email)
       const redirectTo = searchParams.get('redirectTo') || '/dashboard'
+      
+      // Let AuthContext handle profile loading, just redirect
       router.push(redirectTo)
       router.refresh() // Refresh to update auth state
 

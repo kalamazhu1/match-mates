@@ -1,9 +1,10 @@
 ---
 id: task-40
 title: Create user authentication signup flow
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-07 04:43'
+updated_date: '2025-08-07 15:22'
 labels:
   - auth
   - signup

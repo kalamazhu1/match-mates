@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Header } from '@/components/layout/Header'
 import { useRouter } from 'next/navigation'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
+import { QuickRegisterButton } from '@/components/events/QuickRegisterButton'
 import { useEffect, useState } from 'react'
 
 interface Event {
@@ -26,6 +27,13 @@ interface Event {
   status: string
   created_at: string
   updated_at: string
+  // Registration data (populated when fetched)
+  user_registration?: any | null
+  can_register?: boolean
+  registration_eligibility?: {
+    eligible: boolean
+    reason: string
+  }
 }
 
 function EventsContent() {
@@ -38,7 +46,7 @@ function EventsContent() {
 
   useEffect(() => {
     fetchEvents()
-  }, [])
+  }, []) // Only fetch once on mount
 
   const fetchEvents = async () => {
     try {
@@ -50,7 +58,29 @@ function EventsContent() {
       }
       
       const data = await response.json()
-      setEvents(data.events || [])
+      const eventsData = data.events || []
+      
+      // Always fetch registration data for events - the API will handle auth state
+      const eventsWithRegistration = await Promise.all(
+        eventsData.map(async (event: Event) => {
+          try {
+            const regResponse = await fetch(`/api/events/${event.id}`)
+            if (regResponse.ok) {
+              const regData = await regResponse.json()
+              return {
+                ...event,
+                user_registration: regData.user_registration,
+                can_register: regData.can_register,
+                registration_eligibility: regData.registration_eligibility
+              }
+            }
+          } catch (regError) {
+            console.error(`Failed to fetch registration data for event ${event.id}:`, regError)
+          }
+          return event
+        })
+      )
+      setEvents(eventsWithRegistration)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load events')
     } finally {
@@ -210,7 +240,16 @@ function EventsContent() {
                   </div>
 
                   <div className="pt-3 space-y-2">
+                    <QuickRegisterButton
+                      eventId={event.id}
+                      eventTitle={event.title}
+                      userRegistration={event.user_registration}
+                      canRegister={event.can_register || false}
+                      registrationEligibility={event.registration_eligibility || { eligible: false, reason: 'Registration status unknown' }}
+                      onRegistrationChange={fetchEvents}
+                    />
                     <Button 
+                      variant="outline"
                       className="w-full" 
                       size="sm"
                       onClick={() => router.push(`/events/${event.id}`)}

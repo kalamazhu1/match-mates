@@ -1,9 +1,10 @@
 ---
 id: task-30
 title: Create sign-up success page and flow
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-07 00:27'
+updated_date: '2025-08-07 15:23'
 labels:
   - authentication
   - ui

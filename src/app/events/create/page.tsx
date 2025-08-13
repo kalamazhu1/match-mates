@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default async function CreateEventPage() {
   // This will redirect to sign in if not authenticated
-  const { user, profile } = await requireAuthWithProfile('/auth/signin', '/events/create')
+  const { profile } = await requireAuthWithProfile('/auth/signin', '/events/create')
   return (
     <div className="min-h-screen bg-slate-50">
       <Header />

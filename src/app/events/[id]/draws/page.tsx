@@ -312,7 +312,8 @@ export default function DrawCreationPage({ params }: DrawPageProps) {
                   {/* Draw Visualization */}
                   <div className="p-6 bg-slate-50 rounded-lg">
                     <TournamentBracket 
-                      bracketData={draws[0]?.bracket_data} 
+                      bracketData={draws[0]?.bracket_data}
+                      eventStatus={event.status}
                       onMatchUpdate={async (matchId, winnerId, score) => {
                         try {
                           // Update the draw with match result
@@ -660,8 +661,9 @@ function ScoreModal({ isOpen, player1, player2, onSubmit, onClose, existingScore
 }
 
 // Professional Tournament Bracket inspired by Wimbledon design
-function TournamentBracket({ bracketData, onMatchUpdate }: { 
+function TournamentBracket({ bracketData, eventStatus, onMatchUpdate }: { 
   bracketData: any
+  eventStatus: string
   onMatchUpdate: (matchId: string, winnerId: string, score: string) => void 
 }) {
   const [scoreModal, setScoreModal] = useState<{
@@ -740,6 +742,7 @@ function TournamentBracket({ bracketData, onMatchUpdate }: {
                       >
                         <MatchCard 
                           match={match}
+                          eventStatus={eventStatus}
                           onMatchClick={(isEditing = false) => {
                             setScoreModal({
                               isOpen: true,
@@ -778,8 +781,9 @@ function TournamentBracket({ bracketData, onMatchUpdate }: {
 }
 
 // Individual Match Card Component
-function MatchCard({ match, onMatchClick, roundIndex, matchIndex, totalRounds }: {
+function MatchCard({ match, eventStatus, onMatchClick, roundIndex, matchIndex, totalRounds }: {
   match: any
+  eventStatus: string
   onMatchClick: (isEditing?: boolean) => void
   roundIndex: number
   matchIndex: number
@@ -789,6 +793,11 @@ function MatchCard({ match, onMatchClick, roundIndex, matchIndex, totalRounds }:
   const isFinal = roundIndex === totalRounds - 1
   
   const handleClick = () => {
+    // Don't allow match reporting during draw generation phase
+    if (eventStatus !== 'in_progress') {
+      return
+    }
+    
     // Allow clicking if both players exist
     if (!match.player1 || !match.player2) {
       return
@@ -799,14 +808,20 @@ function MatchCard({ match, onMatchClick, roundIndex, matchIndex, totalRounds }:
     onMatchClick(isEditing)
   }
 
+  const canClick = eventStatus === 'in_progress' && match.player1 && match.player2
+  
   return (
     <div className="relative">
       <div 
         className={`bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden ${
-          match.player1 && match.player2 ? 'cursor-pointer hover:shadow-md transition-shadow' : ''
+          canClick ? 'cursor-pointer hover:shadow-md transition-shadow' : ''
         }`}
         onClick={handleClick}
-        title={match.player1 && match.player2 ? (match.winner ? 'Click to edit match result' : 'Click to enter match result') : undefined}
+        title={
+          !match.player1 || !match.player2 ? undefined :
+          eventStatus !== 'in_progress' ? 'Match reporting available when tournament starts' :
+          match.winner ? 'Click to edit match result' : 'Click to enter match result'
+        }
       >
         {/* Match Header */}
         {isFinal && (

@@ -5,9 +5,10 @@
  * Run with: node scripts/test-supabase-connection.js
  */
 
-require('dotenv').config({ path: '.env.local' });
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
 
-const { createClient } = require('@supabase/supabase-js');
+import { createClient } from '@supabase/supabase-js';
 
 async function testSupabaseConnection() {
   console.log('🧪 Testing Supabase Connection...\n');

@@ -1,9 +1,10 @@
 ---
 id: task-15
 title: Create authentication context provider
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-07 00:24'
+updated_date: '2025-08-07 15:23'
 labels:
   - authentication
   - react

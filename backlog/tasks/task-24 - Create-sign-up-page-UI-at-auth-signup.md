@@ -1,9 +1,10 @@
 ---
 id: task-24
 title: Create sign-up page UI at /auth/signup
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-07 00:26'
+updated_date: '2025-08-07 15:23'
 labels:
   - authentication
   - ui

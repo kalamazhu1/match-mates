@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
@@ -24,8 +24,40 @@ export function EventAdminActions({ event, onEventUpdate }: EventAdminActionsPro
   const router = useRouter()
   const [isUpdating, setIsUpdating] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [hasDraws, setHasDraws] = useState(false)
+  const [checkingDraws, setCheckingDraws] = useState(true)
+
+  // Check if draws exist for single elimination tournaments
+  useEffect(() => {
+    if (event.format === 'single_elimination') {
+      checkForDraws()
+    } else {
+      setCheckingDraws(false)
+    }
+  }, [event.id, event.format])
+
+  const checkForDraws = async () => {
+    try {
+      setCheckingDraws(true)
+      const response = await fetch(`/api/events/${event.id}/draws`)
+      if (response.ok) {
+        const data = await response.json()
+        setHasDraws(data.draws && data.draws.length > 0)
+      }
+    } catch (error) {
+      console.error('Error checking draws:', error)
+      setHasDraws(false)
+    } finally {
+      setCheckingDraws(false)
+    }
+  }
 
   const handleStatusChange = async (newStatus: string) => {
+    // Prevent starting single elimination tournament without draws
+    if (newStatus === 'in_progress' && event.format === 'single_elimination' && !hasDraws) {
+      alert('Cannot start tournament! Please create tournament draws first.')
+      return
+    }
     setIsUpdating(true)
     try {
       const response = await fetch(`/api/events/${event.id}`, {
@@ -70,15 +102,26 @@ export function EventAdminActions({ event, onEventUpdate }: EventAdminActionsPro
 
   const getStatusActions = () => {
     const actions = []
+    const canStartTournament = event.format !== 'single_elimination' || hasDraws
     
     if (event.status === 'open') {
       actions.push({ label: 'Close Registration', status: 'full', variant: 'outline' as const })
-      actions.push({ label: 'Start Event', status: 'in_progress', variant: 'outline' as const })
+      actions.push({ 
+        label: canStartTournament ? 'Start Event' : 'Start Event (Need Draws)', 
+        status: 'in_progress', 
+        variant: 'outline' as const,
+        disabled: !canStartTournament
+      })
     }
     
     if (event.status === 'full') {
       actions.push({ label: 'Reopen Registration', status: 'open', variant: 'outline' as const })
-      actions.push({ label: 'Start Event', status: 'in_progress', variant: 'outline' as const })
+      actions.push({ 
+        label: canStartTournament ? 'Start Event' : 'Start Event (Need Draws)', 
+        status: 'in_progress', 
+        variant: 'outline' as const,
+        disabled: !canStartTournament
+      })
     }
     
     if (event.status === 'in_progress') {
@@ -145,6 +188,23 @@ export function EventAdminActions({ event, onEventUpdate }: EventAdminActionsPro
             </select>
           </div>
 
+          {/* Tournament Draws Warning */}
+          {event.format === 'single_elimination' && !hasDraws && !checkingDraws && (
+            <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="flex items-start">
+                <span className="text-yellow-600 mr-2">⚠️</span>
+                <div>
+                  <div className="text-sm font-medium text-yellow-800">
+                    Tournament Draws Required
+                  </div>
+                  <div className="text-xs text-yellow-700 mt-1">
+                    Create tournament draws before starting this single elimination event.
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Quick Status Actions */}
           {statusActions.length > 0 && (
             <div className="space-y-2">
@@ -156,7 +216,7 @@ export function EventAdminActions({ event, onEventUpdate }: EventAdminActionsPro
                   size="sm"
                   className="w-full"
                   onClick={() => handleStatusChange(action.status)}
-                  disabled={isUpdating}
+                  disabled={isUpdating || action.disabled}
                 >
                   {isUpdating ? 'Updating...' : action.label}
                 </Button>
@@ -180,9 +240,24 @@ export function EventAdminActions({ event, onEventUpdate }: EventAdminActionsPro
                 variant="outline"
                 size="sm"
                 className="w-full"
-                onClick={() => router.push(`/events/${event.id}/draws`)}
+                onClick={() => {
+                  router.push(`/events/${event.id}/draws`)
+                  // Refresh draws status after user returns
+                  setTimeout(() => checkForDraws(), 1000)
+                }}
               >
                 🏆 Tournament Draw
+              </Button>
+            )}
+            
+            {event.format === 'single_elimination' && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full"
+                onClick={() => router.push(`/events/${event.id}/leaderboard`)}
+              >
+                📊 Tournament Leaderboard
               </Button>
             )}
             

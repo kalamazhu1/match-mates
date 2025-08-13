@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect } from 'react'
 import { useRequireAuth } from '@/hooks/useRequireAuth'
 
 interface ProtectedRouteProps {

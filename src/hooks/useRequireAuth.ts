@@ -33,12 +33,8 @@ export function useRequireAuth(options: UseRequireAuthOptions = {}) {
       return
     }
 
-    if (requireProfile && !profile) {
-      // User authenticated but no profile, redirect to complete signup
-      setIsRedirecting(true)
-      router.push('/auth/signup?step=profile')
-      return
-    }
+    // If profile is required but not loaded, and we're not loading auth, proceed anyway
+    // The UI will handle the missing profile gracefully
 
     // TODO: Add admin check when user roles are implemented
     if (requireAdmin && profile) {
@@ -59,8 +55,8 @@ export function useRequireAuth(options: UseRequireAuthOptions = {}) {
   return {
     user,
     profile,
-    loading: loading || isRedirecting,
-    isAuthenticated: !!user && (!requireProfile || !!profile),
+    loading: (loading && !user && !isRedirecting) || isRedirecting, // Only show loading if we don't have user yet
+    isAuthenticated: !!user,
     isRedirecting
   }
 }

@@ -296,8 +296,8 @@ export default function EventCreationForm() {
 
             <div className="grid md:grid-cols-2 gap-4">
               <DateTimeInput
-                type="datetime-local"
-                label="Event Start"
+                type="date"
+                label="Event Start Date"
                 required
                 value={formData.date_start}
                 onChange={(e) => handleInputChange('date_start', e.target.value)}
@@ -305,8 +305,8 @@ export default function EventCreationForm() {
               />
 
               <DateTimeInput
-                type="datetime-local"
-                label="Event End"
+                type="date"
+                label="Event End Date"
                 required
                 value={formData.date_end}
                 onChange={(e) => handleInputChange('date_end', e.target.value)}
@@ -315,7 +315,7 @@ export default function EventCreationForm() {
             </div>
 
             <DateTimeInput
-              type="datetime-local"
+              type="date"
               label="Registration Deadline"
               required
               value={formData.registration_deadline}

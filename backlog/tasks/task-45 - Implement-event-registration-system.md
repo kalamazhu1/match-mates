@@ -1,9 +1,10 @@
 ---
 id: task-45
 title: Implement event registration system
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-07 04:44'
+updated_date: '2025-08-07 15:22'
 labels:
   - registration
   - events

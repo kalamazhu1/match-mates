@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 interface EventParams {
   params: Promise<{
@@ -21,10 +22,7 @@ export async function GET(
     // Get the event details
     const { data: event, error: eventError } = await supabase
       .from('events')
-      .select(`
-        *,
-        organizer:users!organizer_id(name, email)
-      `)
+      .select('*')
       .eq('id', eventId)
       .single()
 
@@ -35,22 +33,47 @@ export async function GET(
       )
     }
 
-    // Get registration count and registration details
-    const { data: registrations, error: regError } = await supabase
-      .from('registrations')
-      .select(`
-        *,
-        user:users!user_id(name, email, ntrp_level)
-      `)
-      .eq('event_id', eventId)
-      .neq('status', 'cancelled')
+    // Get organizer details using admin client (to bypass RLS)
+    let organizer = { name: 'Unknown', email: 'Unknown' }
+    if (event.organizer_id) {
+      try {
+        const adminSupabase = createAdminClient()
+        const { data: organizerData, error: organizerError } = await adminSupabase
+          .from('users')
+          .select('name, email')
+          .eq('id', event.organizer_id)
+          .single()
 
-    if (regError) {
-      console.error('Registrations fetch error:', regError)
-      return NextResponse.json(
-        { error: 'Failed to fetch registrations' },
-        { status: 500 }
-      )
+        if (!organizerError && organizerData) {
+          organizer = organizerData
+        } else {
+          console.error('Organizer fetch error:', organizerError)
+        }
+      } catch (adminError) {
+        console.error('Admin client error:', adminError)
+      }
+    }
+
+    // Get registration count and registration details using admin client
+    let registrations = []
+    try {
+      const adminSupabase = createAdminClient()
+      const { data: regData, error: regError } = await adminSupabase
+        .from('registrations')
+        .select(`
+          *,
+          user:users!user_id(name, email, ntrp_level)
+        `)
+        .eq('event_id', eventId)
+        .neq('status', 'cancelled')
+
+      if (regError) {
+        console.error('Registrations fetch error:', regError)
+      } else {
+        registrations = regData || []
+      }
+    } catch (adminError) {
+      console.error('Admin client error fetching registrations:', adminError)
     }
 
     // Calculate registration statistics
@@ -135,7 +158,7 @@ export async function GET(
     const responseData = {
       event: {
         ...event,
-        organizer: event.organizer || { name: 'Unknown', email: 'Unknown' }, // Fallback for missing organizer
+        organizer: organizer, // Use the separately fetched organizer data
         registration_stats: {
           total_registrations: totalRegistrations,
           approved_registrations: approvedRegistrations,
@@ -148,7 +171,7 @@ export async function GET(
       user_registration: userRegistration,
       can_register: canRegister,
       registration_eligibility: registrationEligibility,
-      registrations: event.organizer_id === currentUser?.id ? registrations : null // Only show full list to organizer
+      registrations: registrations // Show registrations to everyone (public participant list)
     }
 
     return NextResponse.json(responseData)

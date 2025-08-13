@@ -1,9 +1,10 @@
 ---
 id: task-49
 title: Implement protected routes and authentication middleware
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-07 04:44'
+updated_date: '2025-08-07 15:22'
 labels:
   - auth
   - middleware

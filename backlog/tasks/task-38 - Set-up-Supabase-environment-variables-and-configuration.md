@@ -1,9 +1,10 @@
 ---
 id: task-38
 title: Set up Supabase environment variables and configuration
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-07 04:43'
+updated_date: '2025-08-07 15:22'
 labels:
   - database
   - config

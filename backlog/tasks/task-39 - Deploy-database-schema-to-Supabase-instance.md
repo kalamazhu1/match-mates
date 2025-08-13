@@ -1,9 +1,10 @@
 ---
 id: task-39
 title: Deploy database schema to Supabase instance
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-07 04:43'
+updated_date: '2025-08-07 15:22'
 labels:
   - database
   - supabase
