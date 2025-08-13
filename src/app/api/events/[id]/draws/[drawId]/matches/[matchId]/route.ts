@@ -92,6 +92,10 @@ export async function PUT(
 
     // Advance winner to next round if applicable
     advanceWinner(bracketData, matchId, winner)
+    
+    // DO NOT automatically process BYEs after match completion
+    // Only the initial bracket generation should create BYEs
+    // Players must wait for their opponents to be determined naturally
 
     // Update the draw in database
     const { error: updateError } = await supabase
@@ -162,3 +166,4 @@ function advanceWinner(bracketData: any, matchId: string, winnerId: string) {
     }
   }
 }
+

@@ -37,7 +37,15 @@ export function isRegistrationDeadlinePassed(deadline: string): boolean {
   return now > deadlineDate
 }
 
-export function canCancelRegistration(eventStartDate: string): { canCancel: boolean; reason?: string } {
+export function canCancelRegistration(eventStartDate: string, eventStatus?: string): { canCancel: boolean; reason?: string } {
+  // Check if tournament has started
+  if (eventStatus === 'in_progress' || eventStatus === 'completed') {
+    return {
+      canCancel: false,
+      reason: 'Cannot cancel registration after tournament has started'
+    }
+  }
+
   const now = new Date()
   const eventStart = new Date(eventStartDate)
   const cancellationDeadline = new Date(eventStart.getTime() - 24 * 60 * 60 * 1000)

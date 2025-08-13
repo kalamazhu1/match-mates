@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
 
 interface EventParams {
   params: Promise<{
@@ -33,12 +32,11 @@ export async function GET(
       )
     }
 
-    // Get organizer details using admin client (to bypass RLS)
+    // Get organizer details
     let organizer = { name: 'Unknown', email: 'Unknown' }
     if (event.organizer_id) {
       try {
-        const adminSupabase = createAdminClient()
-        const { data: organizerData, error: organizerError } = await adminSupabase
+        const { data: organizerData, error: organizerError } = await supabase
           .from('users')
           .select('name, email')
           .eq('id', event.organizer_id)
@@ -49,16 +47,15 @@ export async function GET(
         } else {
           console.error('Organizer fetch error:', organizerError)
         }
-      } catch (adminError) {
-        console.error('Admin client error:', adminError)
+      } catch (error) {
+        console.error('Error fetching organizer:', error)
       }
     }
 
-    // Get registration count and registration details using admin client
+    // Get registration count and registration details
     let registrations = []
     try {
-      const adminSupabase = createAdminClient()
-      const { data: regData, error: regError } = await adminSupabase
+      const { data: regData, error: regError } = await supabase
         .from('registrations')
         .select(`
           *,
@@ -72,8 +69,8 @@ export async function GET(
       } else {
         registrations = regData || []
       }
-    } catch (adminError) {
-      console.error('Admin client error fetching registrations:', adminError)
+    } catch (error) {
+      console.error('Error fetching registrations:', error)
     }
 
     // Calculate registration statistics

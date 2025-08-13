@@ -116,10 +116,10 @@ export default function DrawCreationPage({ params }: DrawPageProps) {
     }
   }, [eventId])
 
-  // Authorization check
+  // Authorization check - only restrict if user is not logged in at all
   useEffect(() => {
-    if (eventData?.event && user && eventData.event.organizer_id !== user.id) {
-      setError('You do not have permission to manage draws for this event.')
+    if (eventData?.event && !user) {
+      setError('Please log in to view tournament brackets.')
     }
   }, [eventData?.event, user])
 
@@ -210,7 +210,7 @@ export default function DrawCreationPage({ params }: DrawPageProps) {
   }
 
   const { event, registrations } = eventData
-  
+  const isOwner = user?.id === event.organizer_id
 
   const approvedRegistrations = (registrations || []).filter(r => r.status === 'approved')
   const canGenerateDraw = event.format === 'single_elimination' && approvedRegistrations.length >= 2
@@ -260,7 +260,7 @@ export default function DrawCreationPage({ params }: DrawPageProps) {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {!canGenerateDraw ? (
+              {!canGenerateDraw && isOwner ? (
                 <div className="text-center py-8">
                   <div className="text-slate-400 text-6xl mb-4">⚠️</div>
                   <h3 className="text-xl font-medium text-slate-800 mb-2">Cannot Generate Draw</h3>
@@ -274,39 +274,52 @@ export default function DrawCreationPage({ params }: DrawPageProps) {
               ) : draws.length === 0 ? (
                 <div className="text-center py-8">
                   <div className="text-slate-400 text-6xl mb-4">🎾</div>
-                  <h3 className="text-xl font-medium text-slate-800 mb-2">Ready to Generate Draw</h3>
-                  <p className="text-slate-600 mb-6">
-                    You have {approvedRegistrations.length} approved players ready for the tournament draw.
-                  </p>
-                  <Button
-                    onClick={generateDraw}
-                    disabled={isGenerating}
-                    className="min-w-[160px]"
-                  >
-                    {isGenerating ? 'Generating...' : 'Generate Draw'}
-                  </Button>
+                  {isOwner ? (
+                    <>
+                      <h3 className="text-xl font-medium text-slate-800 mb-2">Ready to Generate Draw</h3>
+                      <p className="text-slate-600 mb-6">
+                        You have {approvedRegistrations.length} approved players ready for the tournament draw.
+                      </p>
+                      <Button
+                        onClick={generateDraw}
+                        disabled={isGenerating}
+                        className="min-w-[160px]"
+                      >
+                        {isGenerating ? 'Generating...' : 'Generate Draw'}
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <h3 className="text-xl font-medium text-slate-800 mb-2">Tournament Draw Not Available</h3>
+                      <p className="text-slate-600">
+                        The tournament draw has not been generated yet. The organizer will create the bracket when ready.
+                      </p>
+                    </>
+                  )}
                 </div>
               ) : (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium text-slate-800">Tournament Bracket</h4>
-                    <div className="space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={generateDraw}
-                        disabled={isGenerating}
-                      >
-                        {isGenerating ? 'Regenerating...' : 'Regenerate Draw'}
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => deleteDraw(draws[0].id)}
-                      >
-                        Delete Draw
-                      </Button>
-                    </div>
+                    {isOwner && (
+                      <div className="space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={generateDraw}
+                          disabled={isGenerating}
+                        >
+                          {isGenerating ? 'Regenerating...' : 'Regenerate Draw'}
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => deleteDraw(draws[0].id)}
+                        >
+                          Delete Draw
+                        </Button>
+                      </div>
+                    )}
                   </div>
                   
                   {/* Draw Visualization */}
@@ -314,6 +327,7 @@ export default function DrawCreationPage({ params }: DrawPageProps) {
                     <TournamentBracket 
                       bracketData={draws[0]?.bracket_data}
                       eventStatus={event.status}
+                      isOwner={isOwner}
                       onMatchUpdate={async (matchId, winnerId, score) => {
                         try {
                           // Update the draw with match result
@@ -661,9 +675,10 @@ function ScoreModal({ isOpen, player1, player2, onSubmit, onClose, existingScore
 }
 
 // Professional Tournament Bracket inspired by Wimbledon design
-function TournamentBracket({ bracketData, eventStatus, onMatchUpdate }: { 
+function TournamentBracket({ bracketData, eventStatus, isOwner, onMatchUpdate }: { 
   bracketData: any
   eventStatus: string
+  isOwner: boolean
   onMatchUpdate: (matchId: string, winnerId: string, score: string) => void 
 }) {
   const [scoreModal, setScoreModal] = useState<{
@@ -743,6 +758,7 @@ function TournamentBracket({ bracketData, eventStatus, onMatchUpdate }: {
                         <MatchCard 
                           match={match}
                           eventStatus={eventStatus}
+                          isOwner={isOwner}
                           onMatchClick={(isEditing = false) => {
                             setScoreModal({
                               isOpen: true,
@@ -781,9 +797,10 @@ function TournamentBracket({ bracketData, eventStatus, onMatchUpdate }: {
 }
 
 // Individual Match Card Component
-function MatchCard({ match, eventStatus, onMatchClick, roundIndex, matchIndex, totalRounds }: {
+function MatchCard({ match, eventStatus, isOwner, onMatchClick, roundIndex, matchIndex, totalRounds }: {
   match: any
   eventStatus: string
+  isOwner: boolean
   onMatchClick: (isEditing?: boolean) => void
   roundIndex: number
   matchIndex: number
@@ -793,6 +810,11 @@ function MatchCard({ match, eventStatus, onMatchClick, roundIndex, matchIndex, t
   const isFinal = roundIndex === totalRounds - 1
   
   const handleClick = () => {
+    // Only organizers can edit matches
+    if (!isOwner) {
+      return
+    }
+    
     // Don't allow match reporting during draw generation phase
     if (eventStatus !== 'in_progress') {
       return
@@ -808,7 +830,7 @@ function MatchCard({ match, eventStatus, onMatchClick, roundIndex, matchIndex, t
     onMatchClick(isEditing)
   }
 
-  const canClick = eventStatus === 'in_progress' && match.player1 && match.player2
+  const canClick = isOwner && eventStatus === 'in_progress' && match.player1 && match.player2
   
   return (
     <div className="relative">
@@ -819,6 +841,7 @@ function MatchCard({ match, eventStatus, onMatchClick, roundIndex, matchIndex, t
         onClick={handleClick}
         title={
           !match.player1 || !match.player2 ? undefined :
+          !isOwner ? 'Only the tournament organizer can enter match results' :
           eventStatus !== 'in_progress' ? 'Match reporting available when tournament starts' :
           match.winner ? 'Click to edit match result' : 'Click to enter match result'
         }

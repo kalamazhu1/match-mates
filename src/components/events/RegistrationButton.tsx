@@ -79,7 +79,7 @@ export function RegistrationButton({
 
   const handleCancelRegistration = async () => {
     // Check if cancellation is allowed
-    const { canCancel, reason } = canCancelRegistration(event.date_start)
+    const { canCancel, reason } = canCancelRegistration(event.date_start, event.status)
     
     if (!canCancel) {
       setMessage(reason || 'Cannot cancel registration at this time')
@@ -171,14 +171,24 @@ export function RegistrationButton({
                   </div>
                 </div>
               </div>
-              <Button
-                variant="outline"
-                onClick={handleCancelRegistration}
-                disabled={loading}
-                className="w-full border-red-300 text-red-600 hover:bg-red-50"
-              >
-                {loading ? 'Canceling...' : 'Cancel Registration'}
-              </Button>
+              {(() => {
+                const { canCancel, reason } = canCancelRegistration(event.date_start, event.status)
+                return (
+                  <Button
+                    variant="outline"
+                    onClick={handleCancelRegistration}
+                    disabled={loading || !canCancel}
+                    className={`w-full ${
+                      canCancel 
+                        ? 'border-red-300 text-red-600 hover:bg-red-50' 
+                        : 'border-gray-300 text-gray-400 cursor-not-allowed'
+                    }`}
+                    title={canCancel ? undefined : reason}
+                  >
+                    {loading ? 'Canceling...' : canCancel ? 'Cancel Registration' : 'Cannot Cancel'}
+                  </Button>
+                )
+              })()}
             </div>
           )
         case 'pending':
@@ -199,14 +209,24 @@ export function RegistrationButton({
                   </div>
                 </div>
               </div>
-              <Button
-                variant="outline"
-                onClick={handleCancelRegistration}
-                disabled={loading}
-                className="w-full border-red-300 text-red-600 hover:bg-red-50"
-              >
-                {loading ? 'Removing...' : 'Leave Waitlist'}
-              </Button>
+              {(() => {
+                const { canCancel, reason } = canCancelRegistration(event.date_start, event.status)
+                return (
+                  <Button
+                    variant="outline"
+                    onClick={handleCancelRegistration}
+                    disabled={loading || !canCancel}
+                    className={`w-full ${
+                      canCancel 
+                        ? 'border-red-300 text-red-600 hover:bg-red-50' 
+                        : 'border-gray-300 text-gray-400 cursor-not-allowed'
+                    }`}
+                    title={canCancel ? undefined : reason}
+                  >
+                    {loading ? 'Removing...' : canCancel ? 'Leave Waitlist' : 'Cannot Leave'}
+                  </Button>
+                )
+              })()}
             </div>
           )
         case 'cancelled':

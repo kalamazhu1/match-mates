@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
 
 interface RegistrationsParams {
   params: Promise<{
@@ -257,9 +256,8 @@ export async function DELETE(
 
     console.log('DELETE /registrations - About to delete registration:', registration.id)
 
-    // Use admin client to bypass RLS policies for deletion
-    const adminSupabase = createAdminClient()
-    const { error: deleteError } = await adminSupabase
+    // Delete the registration
+    const { error: deleteError } = await supabase
       .from('registrations')
       .delete()
       .eq('id', registration.id)
@@ -281,7 +279,7 @@ export async function DELETE(
     console.log('DELETE /registrations - Delete successful')
 
     // Verify the deletion worked by checking if the registration still exists
-    const { data: verifyData, error: verifyError } = await adminSupabase
+    const { data: verifyData, error: verifyError } = await supabase
       .from('registrations')
       .select('*')
       .eq('id', registration.id)

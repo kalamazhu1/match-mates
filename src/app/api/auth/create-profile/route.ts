@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createAdminClient } from '@/lib/supabase/admin'
+import { createClient } from '@/lib/supabase/server'
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,10 +13,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create Supabase admin client (service role)
-    const supabase = createAdminClient()
+    // Create Supabase client
+    const supabase = await createClient()
 
-    // Insert user profile using service role privileges
+    // Insert user profile
     const { error } = await supabase
       .from('users')
       .insert([{

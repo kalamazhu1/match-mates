@@ -123,14 +123,76 @@ function generateSingleEliminationBracket(participants: any[]) {
       matches: roundMatches
     })
   }
-  
-  return {
+
+  // Automatically advance BYE winners through all rounds
+  const bracketData = {
     format: 'single_elimination',
     participants: shuffled,
     rounds,
     totalRounds,
     bracketSize: nextPowerOf2,
     numberOfByes
+  }
+  
+  // Process BYE winners and advance them through subsequent rounds
+  advanceByeWinners(bracketData)
+  
+  return bracketData
+}
+
+// Helper function to advance BYE winners through subsequent rounds
+function advanceByeWinners(bracketData: any) {
+  // Only process the first round initially - higher rounds should only be filled
+  // when actual match results determine the winners
+  const firstRound = bracketData.rounds[0]
+  
+  if (!firstRound || bracketData.rounds.length < 2) {
+    return
+  }
+  
+  const secondRound = bracketData.rounds[1]
+  
+  // Process first round BYE winners and advance them to second round
+  for (let matchIndex = 0; matchIndex < firstRound.matches.length; matchIndex++) {
+    const match = firstRound.matches[matchIndex]
+    
+    // Only advance if this is a TRUE BYE (player vs null, already marked as BYE winner)
+    if (match.winner && match.score === 'BYE') {
+      const nextMatchIndex = Math.floor(matchIndex / 2)
+      
+      // Ensure we don't go out of bounds
+      if (nextMatchIndex < secondRound.matches.length) {
+        const nextMatch = secondRound.matches[nextMatchIndex]
+        
+        // Get the winner data
+        let winnerData = null
+        if (match.player1?.id === match.winner) {
+          winnerData = match.player1
+        } else if (match.player2?.id === match.winner) {
+          winnerData = match.player2
+        }
+        
+        if (winnerData) {
+          // Determine if winner goes to player1 or player2 slot in next match
+          if (matchIndex % 2 === 0) {
+            // Even match index → goes to player1 slot
+            if (!nextMatch.player1) {
+              nextMatch.player1 = winnerData
+            }
+          } else {
+            // Odd match index → goes to player2 slot
+            if (!nextMatch.player2) {
+              nextMatch.player2 = winnerData
+            }
+          }
+          
+          // IMPORTANT: Do NOT automatically advance in second round
+          // Even if there's only one player, wait for the other match to complete
+          // Only set BYE winner if BOTH players are known and one is null
+          // This prevents premature advancement when opponent is just "TBD"
+        }
+      }
+    }
   }
 }
 
