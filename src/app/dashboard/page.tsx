@@ -20,11 +20,34 @@ interface Event {
   }
 }
 
+interface Registration {
+  id: string
+  status: 'approved' | 'pending' | 'rejected'
+  registered_at: string
+  event: {
+    id: string
+    title: string
+    event_type: 'tournament' | 'league' | 'social'
+    format: string
+    status: string
+    date_start: string
+    location: string
+    max_participants: number
+    entry_fee: number
+    organizer: {
+      name: string
+      email: string
+    }
+  }
+}
+
 function DashboardContent() {
   const { user, profile } = useAuth()
   const router = useRouter()
   const [myEvents, setMyEvents] = useState<Event[]>([])
   const [eventsLoading, setEventsLoading] = useState(true)
+  const [registeredEvents, setRegisteredEvents] = useState<Registration[]>([])
+  const [registrationsLoading, setRegistrationsLoading] = useState(true)
 
   useEffect(() => {
     const fetchMyEvents = async () => {
@@ -45,7 +68,26 @@ function DashboardContent() {
       }
     }
 
+    const fetchRegisteredEvents = async () => {
+      if (!user?.id) return
+      
+      try {
+        setRegistrationsLoading(true)
+        const response = await fetch(`/api/user/registrations?limit=5`)
+        
+        if (response.ok) {
+          const data = await response.json()
+          setRegisteredEvents(data.registrations || [])
+        }
+      } catch (error) {
+        console.error('Error fetching registered events:', error)
+      } finally {
+        setRegistrationsLoading(false)
+      }
+    }
+
     fetchMyEvents()
+    fetchRegisteredEvents()
   }, [user?.id])
 
   const formatDate = (dateString: string) => {
@@ -81,7 +123,7 @@ function DashboardContent() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6">
           <Card>
             <CardHeader>
               <CardTitle>Profile Information</CardTitle>
@@ -183,6 +225,82 @@ function DashboardContent() {
                       </Button>
                     </div>
                   ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                My Registrations
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => router.push('/events?filter=registered')}
+                >
+                  View All
+                </Button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {registrationsLoading ? (
+                <div className="flex items-center justify-center py-4">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-600"></div>
+                </div>
+              ) : registeredEvents.length === 0 ? (
+                <div className="text-center py-6">
+                  <p className="text-slate-600 text-sm mb-3">
+                    You haven't registered for any events yet.
+                  </p>
+                  <Button
+                    size="sm"
+                    onClick={() => router.push('/events')}
+                  >
+                    Browse Events
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {registeredEvents.map((registration) => {
+                    const event = registration.event
+                    return (
+                      <div
+                        key={registration.id}
+                        className="flex items-center justify-between p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors"
+                        onClick={() => router.push(`/events/${event.id}`)}
+                      >
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h4 className="font-medium text-slate-800 text-sm truncate">
+                              {event.title}
+                            </h4>
+                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(event.status)}`}>
+                              {event.status}
+                            </span>
+                            {registration.status === 'pending' && (
+                              <span className="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
+                                Waitlist
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-4 text-xs text-slate-600">
+                            <span>📅 {formatDate(event.date_start)}</span>
+                            <span>📍 {event.location}</span>
+                            <span className="capitalize">{event.event_type}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center">
+                          {registration.status === 'approved' && (
+                            <span className="text-green-600 text-sm mr-2">✅</span>
+                          )}
+                          {registration.status === 'pending' && (
+                            <span className="text-yellow-600 text-sm mr-2">⏰</span>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
               )}
             </CardContent>

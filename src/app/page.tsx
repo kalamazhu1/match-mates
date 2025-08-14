@@ -1,7 +1,39 @@
+'use client'
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Header } from "@/components/layout/Header";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Home() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    // Redirect to dashboard if user is logged in
+    if (!loading && user) {
+      router.push('/dashboard');
+    }
+  }, [user, loading, router]);
+
+  // Show loading state while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 to-blue-700 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <p className="text-white text-lg">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If user is logged in, don't render homepage (redirect is happening)
+  if (user) {
+    return null;
+  }
+
   return (
     <div>
       <Header />
