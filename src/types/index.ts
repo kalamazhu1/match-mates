@@ -12,7 +12,7 @@ export interface Event {
   id: string;
   title: string;
   description: string;
-  event_type: 'tournament' | 'league' | 'social';
+  event_type: 'tournament' | 'league' | 'social' | 'ladder';
   format: 'single_elimination' | 'double_elimination' | 'round_robin' | 'league_play' | 'social_play';
   skill_level_min: string;
   skill_level_max: string;
@@ -51,6 +51,31 @@ export interface Payment {
   currency: string;
   stripe_payment_intent_id: string;
   status: 'pending' | 'succeeded' | 'failed' | 'cancelled' | 'refunded';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Match {
+  id: string;
+  event_id: string;
+  player1_id: string;
+  player2_id: string;
+  winner_id?: string;
+  loser_id?: string;
+  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
+  player1_sets_won: number;
+  player2_sets_won: number;
+  player1_games_won: number;
+  player2_games_won: number;
+  set_scores: Array<{
+    player1_games: number;
+    player2_games: number;
+  }>;
+  match_type: 'ladder_challenge' | 'casual' | 'practice';
+  notes?: string;
+  scheduled_at?: string;
+  started_at?: string;
+  completed_at?: string;
   created_at: string;
   updated_at: string;
 }

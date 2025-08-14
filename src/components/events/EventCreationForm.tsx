@@ -24,7 +24,7 @@ interface FormErrors {
 interface FormState {
   title: string
   description: string
-  event_type: 'tournament' | 'league' | 'social' | ''
+  event_type: 'tournament' | 'league' | 'social' | 'ladder' | ''
   format: 'single_elimination' | 'double_elimination' | 'round_robin' | 'league_play' | 'social_play' | ''
   skill_level_min: '3.0' | '3.5' | '4.0' | '4.5' | '5.0' | '5.5' | ''
   skill_level_max: '3.0' | '3.5' | '4.0' | '4.5' | '5.0' | '5.5' | ''
@@ -62,10 +62,17 @@ export default function EventCreationForm() {
   const router = useRouter()
 
   const handleInputChange = (field: keyof FormState, value: string) => {
-    setFormData(prev => ({
-      ...prev,
+    const newFormData = {
+      ...formData,
       [field]: value
-    }))
+    }
+    
+    // If changing event type and it's not tournament, clear format
+    if (field === 'event_type' && value !== 'tournament') {
+      newFormData.format = 'social_play' // Default format for non-tournament events
+    }
+    
+    setFormData(newFormData)
     
     // Clear error when user starts typing
     if (errors[field]) {
@@ -205,15 +212,17 @@ export default function EventCreationForm() {
                 error={errors.event_type}
               />
 
-              <MatchMatesSelect
-                type="format"
-                label="Tournament Format"
-                required
-                placeholder="Select format"
-                value={formData.format}
-                onChange={(e) => handleInputChange('format', e.target.value)}
-                error={errors.format}
-              />
+              {formData.event_type === 'tournament' && (
+                <MatchMatesSelect
+                  type="format"
+                  label="Tournament Format"
+                  required
+                  placeholder="Select format"
+                  value={formData.format}
+                  onChange={(e) => handleInputChange('format', e.target.value)}
+                  error={errors.format}
+                />
+              )}
             </div>
           </FormSection>
         </CardContent>

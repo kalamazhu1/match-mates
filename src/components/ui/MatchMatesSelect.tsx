@@ -13,7 +13,8 @@ export const NTRP_LEVELS = [
 export const EVENT_TYPES = [
   { value: 'tournament', label: 'Tournament' },
   { value: 'league', label: 'League' },
-  { value: 'social', label: 'Social Play' }
+  { value: 'social', label: 'Social Play' },
+  { value: 'ladder', label: 'Ladder' }
 ]
 
 export const TOURNAMENT_FORMATS = [

@@ -24,7 +24,7 @@ interface FormErrors {
 interface FormState {
   title: string
   description: string
-  event_type: 'tournament' | 'league' | 'social' | ''
+  event_type: 'tournament' | 'league' | 'social' | 'ladder' | ''
   format: 'single_elimination' | 'double_elimination' | 'round_robin' | 'league_play' | 'social_play' | ''
   skill_level_min: '3.0' | '3.5' | '4.0' | '4.5' | '5.0' | '5.5' | ''
   skill_level_max: '3.0' | '3.5' | '4.0' | '4.5' | '5.0' | '5.5' | ''
@@ -87,7 +87,18 @@ export function EventEditForm({ event, eventId }: EventEditFormProps) {
   }, [event])
 
   const handleInputChange = (field: keyof FormState, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+    const newFormData = {
+      ...formData,
+      [field]: value
+    }
+    
+    // If changing event type and it's not tournament, clear format
+    if (field === 'event_type' && value !== 'tournament') {
+      newFormData.format = 'social_play' // Default format for non-tournament events
+    }
+    
+    setFormData(newFormData)
+    
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }))
@@ -100,7 +111,7 @@ export function EventEditForm({ event, eventId }: EventEditFormProps) {
     if (!formData.title.trim()) newErrors.title = 'Event title is required'
     if (!formData.description.trim()) newErrors.description = 'Event description is required'
     if (!formData.event_type) newErrors.event_type = 'Event type is required'
-    if (!formData.format) newErrors.format = 'Event format is required'
+    if (formData.event_type === 'tournament' && !formData.format) newErrors.format = 'Tournament format is required'
     if (!formData.skill_level_min) newErrors.skill_level_min = 'Minimum skill level is required'
     if (!formData.skill_level_max) newErrors.skill_level_max = 'Maximum skill level is required'
     if (!formData.location.trim()) newErrors.location = 'Location is required'
@@ -269,14 +280,16 @@ export function EventEditForm({ event, eventId }: EventEditFormProps) {
                 required
               />
 
-              <MatchMatesSelect
-                label="Format"
-                options={formatOptions}
-                value={formData.format}
-                onChange={(value) => handleInputChange('format', value)}
-                error={errors.format}
-                required
-              />
+              {formData.event_type === 'tournament' && (
+                <MatchMatesSelect
+                  label="Format"
+                  options={formatOptions}
+                  value={formData.format}
+                  onChange={(value) => handleInputChange('format', value)}
+                  error={errors.format}
+                  required
+                />
+              )}
             </div>
           </FormSection>
         </CardContent>

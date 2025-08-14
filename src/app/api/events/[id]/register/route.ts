@@ -54,13 +54,12 @@ export async function POST(
       )
     }
 
-    // Check if user is already registered
-    const { data: existingRegistration, error: regCheckError } = await supabase
+    // Check if user has any registration record (including cancelled ones)
+    const { data: allRegistrations, error: regCheckError } = await supabase
       .from('registrations')
       .select('*')
       .eq('user_id', user.id)
       .eq('event_id', eventId)
-      .single()
 
     if (regCheckError && regCheckError.code !== 'PGRST116') {
       console.error('Registration check error:', regCheckError)
@@ -70,12 +69,17 @@ export async function POST(
       )
     }
 
-    if (existingRegistration) {
+    // Check for active registrations
+    const activeRegistration = allRegistrations?.find(reg => reg.status !== 'cancelled')
+    if (activeRegistration) {
       return NextResponse.json(
         { error: 'You are already registered for this event' },
         { status: 409 }
       )
     }
+
+    // Check if there's a cancelled registration to reactivate
+    const cancelledRegistration = allRegistrations?.find(reg => reg.status === 'cancelled')
 
     // Validate event status
     if (event.status !== 'open') {
@@ -128,32 +132,66 @@ export async function POST(
     const isAtCapacity = (registrationCount || 0) >= event.max_participants
     const registrationStatus = isAtCapacity ? 'pending' : 'approved' // pending means waitlist
     
-    // Create the registration
-    const registrationData = {
-      user_id: user.id,
-      event_id: eventId,
-      status: registrationStatus,
-      payment_status: event.entry_fee > 0 ? 'pending' : 'paid',
-      registered_at: new Date().toISOString(),
-      approved_at: registrationStatus === 'approved' ? new Date().toISOString() : null
-    }
+    let registration
+    
+    if (cancelledRegistration) {
+      // Reactivate the cancelled registration
+      const updateData = {
+        status: registrationStatus,
+        payment_status: event.entry_fee > 0 ? 'pending' : 'paid',
+        approved_at: registrationStatus === 'approved' ? new Date().toISOString() : null
+      }
 
-    const { data: registration, error: insertError } = await supabase
-      .from('registrations')
-      .insert([registrationData])
-      .select(`
-        *,
-        event:events(*),
-        user:users(*)
-      `)
-      .single()
+      const { data: updatedReg, error: updateError } = await supabase
+        .from('registrations')
+        .update(updateData)
+        .eq('id', cancelledRegistration.id)
+        .select(`
+          *,
+          event:events(*),
+          user:users(*)
+        `)
+        .single()
 
-    if (insertError) {
-      console.error('Registration insertion error:', insertError)
-      return NextResponse.json(
-        { error: 'Failed to create registration' },
-        { status: 500 }
-      )
+      if (updateError) {
+        console.error('Registration reactivation error:', updateError)
+        return NextResponse.json(
+          { error: 'Failed to reactivate registration' },
+          { status: 500 }
+        )
+      }
+      
+      registration = updatedReg
+    } else {
+      // Create a new registration
+      const registrationData = {
+        user_id: user.id,
+        event_id: eventId,
+        status: registrationStatus,
+        payment_status: event.entry_fee > 0 ? 'pending' : 'paid',
+        registered_at: new Date().toISOString(),
+        approved_at: registrationStatus === 'approved' ? new Date().toISOString() : null
+      }
+
+      const { data: newReg, error: insertError } = await supabase
+        .from('registrations')
+        .insert([registrationData])
+        .select(`
+          *,
+          event:events(*),
+          user:users(*)
+        `)
+        .single()
+
+      if (insertError) {
+        console.error('Registration insertion error:', insertError)
+        return NextResponse.json(
+          { error: 'Failed to create registration' },
+          { status: 500 }
+        )
+      }
+      
+      registration = newReg
     }
 
     // Update event status to 'full' if we've reached capacity
@@ -202,7 +240,7 @@ export async function GET(
       )
     }
 
-    // Check if user is registered for this event
+    // Check if user is registered for this event (exclude cancelled registrations)
     const { data: registration, error: regError } = await supabase
       .from('registrations')
       .select(`
@@ -212,6 +250,7 @@ export async function GET(
       `)
       .eq('user_id', user.id)
       .eq('event_id', eventId)
+      .neq('status', 'cancelled')
       .single()
 
     if (regError && regError.code !== 'PGRST116') {

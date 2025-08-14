@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Event } from '@/types'
+import { RegistrationButton } from '@/components/events/RegistrationButton'
+import { Event, Registration } from '@/types'
 
 interface EventAdminActionsProps {
   event: Event & {
@@ -17,10 +18,22 @@ interface EventAdminActionsProps {
       has_waitlist: boolean
     }
   }
+  userRegistration?: Registration | null
+  canRegister?: boolean
+  registrationEligibility?: {
+    eligible: boolean
+    reason: string
+  }
   onEventUpdate: () => void
 }
 
-export function EventAdminActions({ event, onEventUpdate }: EventAdminActionsProps) {
+export function EventAdminActions({ 
+  event, 
+  userRegistration, 
+  canRegister, 
+  registrationEligibility,
+  onEventUpdate 
+}: EventAdminActionsProps) {
   const router = useRouter()
   const [isUpdating, setIsUpdating] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
@@ -181,7 +194,7 @@ export function EventAdminActions({ event, onEventUpdate }: EventAdminActionsPro
               disabled={isUpdating}
             >
               <option value="open">Open - Accepting Registrations</option>
-              <option value="full">Full - Preparing Tournament Draws</option>
+              <option value="full">Full - Preparing the Event</option>
               <option value="in_progress">In Progress - Event Started</option>
               <option value="completed">Completed - Event Finished</option>
               <option value="cancelled">Cancelled - Event Cancelled</option>
@@ -261,6 +274,17 @@ export function EventAdminActions({ event, onEventUpdate }: EventAdminActionsPro
               </Button>
             )}
             
+            {event.event_type === 'ladder' && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full"
+                onClick={() => router.push(`/events/${event.id}/ladder`)}
+              >
+                🪜 Ladder Rankings
+              </Button>
+            )}
+            
             <Button
               variant="outline"
               size="sm"
@@ -307,6 +331,26 @@ export function EventAdminActions({ event, onEventUpdate }: EventAdminActionsPro
               </div>
             )}
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Admin Registration Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <span className="text-green-600">🎾</span>
+            Your Registration
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <RegistrationButton
+            eventId={event.id}
+            event={event}
+            userRegistration={userRegistration || null}
+            canRegister={canRegister || false}
+            registrationEligibility={registrationEligibility || { eligible: false, reason: 'Unable to check eligibility' }}
+            onRegistrationChange={onEventUpdate}
+          />
         </CardContent>
       </Card>
     </div>

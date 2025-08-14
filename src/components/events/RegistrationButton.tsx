@@ -87,9 +87,6 @@ export function RegistrationButton({
       return
     }
 
-    if (!confirm('Are you sure you want to cancel your registration? This action cannot be undone.')) {
-      return
-    }
 
     setLoading(true)
     setMessage('')

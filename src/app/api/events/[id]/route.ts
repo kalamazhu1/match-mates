@@ -93,12 +93,13 @@ export async function GET(
       currentUser = user
       
       if (user && !authError) {
-        // Get user's registration for this event
+        // Get user's registration for this event (exclude cancelled registrations)
         const { data: userReg, error: userRegError } = await supabase
           .from('registrations')
           .select('*')
           .eq('user_id', user.id)
           .eq('event_id', eventId)
+          .neq('status', 'cancelled')
           .single()
 
         if (userRegError && userRegError.code !== 'PGRST116') {

@@ -232,6 +232,9 @@ export default function EventPage({ params }: EventPageProps) {
               {isOwner ? (
                 <EventAdminActions 
                   event={event} 
+                  userRegistration={user_registration}
+                  canRegister={can_register}
+                  registrationEligibility={registration_eligibility}
                   onEventUpdate={fetchEventData}
                 />
               ) : (

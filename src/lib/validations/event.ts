@@ -3,7 +3,7 @@ import { z } from 'zod'
 export const createEventSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100, 'Title must be less than 100 characters'),
   description: z.string().optional(),
-  event_type: z.enum(['tournament', 'league', 'social']),
+  event_type: z.enum(['tournament', 'league', 'social', 'ladder']),
   format: z.enum(['single_elimination', 'double_elimination', 'round_robin', 'league_play', 'social_play']),
   skill_level_min: z.enum(['3.0', '3.5', '4.0', '4.5', '5.0', '5.5']),
   skill_level_max: z.enum(['3.0', '3.5', '4.0', '4.5', '5.0', '5.5']),
@@ -49,6 +49,15 @@ export const createEventSchema = z.object({
 }, {
   message: 'Maximum skill level must be greater than or equal to minimum skill level',
   path: ['skill_level_max']
+}).refine((data) => {
+  // For tournaments, format is required and must be a tournament format
+  if (data.event_type === 'tournament') {
+    return ['single_elimination', 'double_elimination', 'round_robin'].includes(data.format)
+  }
+  return true
+}, {
+  message: 'Tournament events require a valid tournament format',
+  path: ['format']
 })
 
 export type CreateEventInput = z.infer<typeof createEventSchema>
