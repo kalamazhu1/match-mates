@@ -4,6 +4,10 @@ export interface User {
   name: string;
   ntrp_level: string;
   phone?: string;
+  glicko_rating: number;
+  glicko_rd: number;
+  glicko_volatility: number;
+  glicko_last_updated: string;
   created_at: string;
   updated_at: string;
 }

@@ -36,6 +36,31 @@ interface EventData {
   registrations?: any[]
 }
 
+interface LadderData {
+  event: {
+    id: string
+    title: string
+    event_type: string
+    status: string
+  }
+  ladder: {
+    id: string
+    name: string
+    email: string
+    ntrp_level: string
+    position: number
+    wins: number
+    losses: number
+    total_matches: number
+    win_percentage: number
+    glicko_rating: number
+    glicko_rd: number
+    glicko_strength: number
+    is_established: boolean
+  }[]
+  total_players: number
+}
+
 interface LeaderboardData {
   event: {
     id: string
@@ -68,6 +93,7 @@ interface LeaderboardData {
 export default function EventPage({ params }: EventPageProps) {
   const [eventData, setEventData] = useState<EventData | null>(null)
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardData | null>(null)
+  const [ladderData, setLadderData] = useState<LadderData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [eventId, setEventId] = useState<string | null>(null)
@@ -100,6 +126,11 @@ export default function EventPage({ params }: EventPageProps) {
         await fetchLeaderboardData()
       }
       
+      // If it's a ladder event, fetch ladder data
+      if (data.event.event_type === 'ladder') {
+        await fetchLadderData()
+      }
+      
       setError('')
     } catch (err) {
       console.error('Error fetching event:', err)
@@ -122,6 +153,22 @@ export default function EventPage({ params }: EventPageProps) {
     } catch (err) {
       console.error('Error fetching leaderboard:', err)
       // Don't show error for leaderboard fetch, just silently fail
+    }
+  }
+
+  const fetchLadderData = async () => {
+    if (!eventId) return
+    
+    try {
+      const response = await fetch(`/api/events/${eventId}/ladder`)
+      const data = await response.json()
+
+      if (response.ok) {
+        setLadderData(data)
+      }
+    } catch (err) {
+      console.error('Error fetching ladder:', err)
+      // Don't show error for ladder fetch, just silently fail
     }
   }
 
@@ -325,6 +372,100 @@ export default function EventPage({ params }: EventPageProps) {
           </div>
         )}
 
+        {/* Ladder Results - Show for ladder events with participants */}
+        {ladderData && event.event_type === 'ladder' && ladderData.ladder.length > 0 && (
+          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl shadow-sm border border-green-200 p-8 mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-bold text-slate-800 mb-2 flex items-center">
+                  🏆 Current Ladder Standings
+                </h2>
+                <p className="text-slate-600">Live rankings based on Glicko-2 ratings from match results</p>
+              </div>
+              <Link
+                href={`/events/${event.id}/ladder`}
+                className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              >
+                <span className="mr-2">📊</span>
+                View Full Ladder
+              </Link>
+            </div>
+
+            {/* Top 5 Players */}
+            <div className="bg-white rounded-lg p-6 mb-4">
+              <h3 className="text-lg font-semibold text-slate-800 mb-4">Top 5 Players</h3>
+              <div className="space-y-3">
+                {ladderData.ladder.slice(0, 5).map((player, index) => (
+                  <div
+                    key={player.id}
+                    className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
+                      index === 0 
+                        ? 'bg-gradient-to-r from-yellow-100 to-yellow-200 border border-yellow-300' 
+                        : 'bg-slate-50 hover:bg-slate-100'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-4">
+                      {/* Position */}
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
+                        index === 0 
+                          ? 'bg-yellow-500 text-white' 
+                          : index === 1 
+                          ? 'bg-gray-400 text-white'
+                          : index === 2
+                          ? 'bg-orange-400 text-white'
+                          : 'bg-slate-300 text-slate-700'
+                      }`}>
+                        {index === 0 ? '👑' : player.position}
+                      </div>
+                      
+                      {/* Player Info */}
+                      <div>
+                        <div className="font-medium text-slate-800">{player.name}</div>
+                        <div className="flex items-center gap-2 text-sm text-slate-600">
+                          <span className="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs font-medium">
+                            {player.ntrp_level} NTRP
+                          </span>
+                          {player.total_matches > 0 && (
+                            <span className="text-xs">
+                              {player.wins}W-{player.losses}L ({player.win_percentage}%)
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Rating */}
+                    <div className="text-right">
+                      <div className="font-bold text-lg text-slate-800">
+                        {player.glicko_rating}
+                      </div>
+                      <div className="text-xs text-slate-500">
+                        {player.is_established ? 'Reliable' : `Provisional`}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-white p-4 rounded-lg text-center shadow-sm">
+                <div className="text-2xl font-bold text-green-600">
+                  {ladderData.total_players}
+                </div>
+                <div className="text-sm text-gray-600">Total Players</div>
+              </div>
+              <div className="bg-white p-4 rounded-lg text-center shadow-sm">
+                <div className="text-2xl font-bold text-blue-600">
+                  {ladderData.ladder.reduce((sum, p) => sum + p.total_matches, 0)}
+                </div>
+                <div className="text-sm text-gray-600">Total Matches</div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Event Details Grid */}
         <div className="grid md:grid-cols-2 gap-8 mb-8">
           {/* Event Information */}
@@ -477,6 +618,29 @@ export default function EventPage({ params }: EventPageProps) {
               >
                 <span className="mr-2">📊</span>
                 View Leaderboard
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* Ladder Links */}
+        {event.event_type === 'ladder' && (
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8">
+            <h2 className="text-xl font-semibold text-slate-800 mb-4">Ladder Competition</h2>
+            <p className="text-slate-600 mb-4">
+              {event.status === 'completed' 
+                ? 'This ladder has been completed. View the final standings and match history.'
+                : 'View the full ladder standings and record match results in this ongoing competition.'
+              }
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link
+                href={`/events/${event.id}/ladder`}
+                className="inline-flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >
+                <span className="mr-2">🏆</span>
+                {event.status === 'completed' ? 'View Final Ladder Results' : 'View Full Ladder & Record Matches'}
               </Link>
             </div>
           </div>
