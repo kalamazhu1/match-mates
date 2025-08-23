@@ -17,7 +17,7 @@ export interface Event {
   title: string;
   description: string;
   event_type: 'tournament' | 'league' | 'social' | 'ladder';
-  format: 'single_elimination' | 'double_elimination' | 'round_robin' | 'league_play' | 'social_play';
+  format: 'single_elimination' | 'round_robin' | 'league_play' | 'social_play';
   skill_level_min: string;
   skill_level_max: string;
   location: string;

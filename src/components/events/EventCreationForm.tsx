@@ -25,7 +25,7 @@ interface FormState {
   title: string
   description: string
   event_type: 'tournament' | 'league' | 'social' | 'ladder' | ''
-  format: 'single_elimination' | 'double_elimination' | 'round_robin' | 'league_play' | 'social_play' | ''
+  format: 'single_elimination' | 'round_robin' | 'league_play' | 'social_play' | ''
   skill_level_min: '3.0' | '3.5' | '4.0' | '4.5' | '5.0' | '5.5' | ''
   skill_level_max: '3.0' | '3.5' | '4.0' | '4.5' | '5.0' | '5.5' | ''
   location: string
@@ -67,9 +67,15 @@ export default function EventCreationForm() {
       [field]: value
     }
     
-    // If changing event type and it's not tournament, clear format
-    if (field === 'event_type' && value !== 'tournament') {
-      newFormData.format = 'social_play' // Default format for non-tournament events
+    // Auto-set format based on event type
+    if (field === 'event_type') {
+      if (value === 'tournament') {
+        newFormData.format = '' // Let user choose tournament format
+      } else if (value === 'league') {
+        newFormData.format = 'league_play'
+      } else if (value === 'social' || value === 'ladder') {
+        newFormData.format = 'social_play'
+      }
     }
     
     setFormData(newFormData)
@@ -214,7 +220,7 @@ export default function EventCreationForm() {
 
               {formData.event_type === 'tournament' && (
                 <MatchMatesSelect
-                  type="format"
+                  type="tournamentFormat"
                   label="Tournament Format"
                   required
                   placeholder="Select format"

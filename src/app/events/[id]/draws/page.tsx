@@ -213,7 +213,8 @@ export default function DrawCreationPage({ params }: DrawPageProps) {
   const isOwner = user?.id === event.organizer_id
 
   const approvedRegistrations = (registrations || []).filter(r => r.status === 'approved')
-  const canGenerateDraw = event.format === 'single_elimination' && approvedRegistrations.length >= 2
+  const canGenerateDraw = (event.format === 'single_elimination' && approvedRegistrations.length >= 2) ||
+                          (event.format === 'round_robin' && approvedRegistrations.length >= 3)
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -227,7 +228,9 @@ export default function DrawCreationPage({ params }: DrawPageProps) {
               <Link href={`/events/${eventId}`} className="text-orange-600 hover:text-orange-700 text-sm font-medium">
                 ← Back to Event
               </Link>
-              <h1 className="text-3xl font-bold text-slate-800 mt-2">Tournament Draw</h1>
+              <h1 className="text-3xl font-bold text-slate-800 mt-2">
+                {event.format === 'round_robin' ? 'Round Robin Tournament' : 'Tournament Draw'}
+              </h1>
               <p className="text-slate-600">{event.title}</p>
             </div>
           </div>
@@ -359,8 +362,99 @@ export default function DrawCreationPage({ params }: DrawPageProps) {
           </Card>
         )}
 
+        {/* Round Robin Tournament */}
+        {event.format === 'round_robin' && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <span className="text-green-600">🏆</span>
+                Round Robin Tournament
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {!canGenerateDraw && isOwner ? (
+                <div className="text-center py-8">
+                  <div className="text-slate-400 text-6xl mb-4">⚠️</div>
+                  <h3 className="text-xl font-medium text-slate-800 mb-2">Cannot Generate Tournament</h3>
+                  <p className="text-slate-600">
+                    {approvedRegistrations.length < 3 
+                      ? `Need at least 3 approved registrations for round robin. Currently have ${approvedRegistrations.length}.`
+                      : 'Unknown issue preventing tournament generation.'
+                    }
+                  </p>
+                </div>
+              ) : draws.length === 0 ? (
+                <div className="text-center py-8">
+                  <div className="text-slate-400 text-6xl mb-4">🎾</div>
+                  {isOwner ? (
+                    <>
+                      <h3 className="text-xl font-medium text-slate-800 mb-2">Ready to Generate Round Robin</h3>
+                      <p className="text-slate-600 mb-6">
+                        You have {approvedRegistrations.length} approved players ready for the round robin tournament.
+                        Each player will play every other player once.
+                      </p>
+                      <Button
+                        onClick={generateDraw}
+                        disabled={isGenerating}
+                        className="min-w-[160px]"
+                      >
+                        {isGenerating ? 'Generating...' : 'Generate Round Robin'}
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <h3 className="text-xl font-medium text-slate-800 mb-2">Tournament Schedule Not Available</h3>
+                      <p className="text-slate-600">
+                        The round robin schedule has not been generated yet. The organizer will create the tournament schedule when ready.
+                      </p>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-slate-800">Tournament Schedule & Standings</h4>
+                  </div>
+                  
+                  {/* Round Robin Display */}
+                  <div className="p-6 bg-slate-50 rounded-lg">
+                    <RoundRobinDisplay 
+                      tournamentData={draws[0]?.bracket_data}
+                      eventStatus={event.status}
+                      isOwner={isOwner}
+                      onMatchUpdate={async (matchId, winnerId, score) => {
+                        try {
+                          // Update the tournament with match result
+                          const response = await fetch(`/api/events/${eventId}/draws/${draws[0].id}/matches/${matchId}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              winner: winnerId,
+                              score: score
+                            })
+                          })
+                          
+                          if (response.ok) {
+                            // Refresh the draws to show updated standings
+                            await fetchDraws()
+                          } else {
+                            alert('Failed to update match result')
+                          }
+                        } catch (error) {
+                          console.error('Error updating match:', error)
+                          alert('Failed to update match result')
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
         {/* Other Tournament Formats */}
-        {event.format !== 'single_elimination' && (
+        {event.format !== 'single_elimination' && event.format !== 'round_robin' && (
           <Card>
             <CardContent className="text-center py-12">
               <div className="text-slate-400 text-6xl mb-4">🚧</div>
@@ -999,6 +1093,418 @@ function BracketLine({ roundIndex, matchIndex }: {
           />
         )}
       </svg>
+    </div>
+  )
+}
+
+// Round Robin Display Component
+function RoundRobinDisplay({ tournamentData, eventStatus, isOwner, onMatchUpdate }: {
+  tournamentData: any
+  eventStatus: string
+  isOwner: boolean
+  onMatchUpdate: (matchId: string, winnerId: string, score: string) => void
+}) {
+  const [activeTab, setActiveTab] = useState<'standings' | 'schedule'>('standings')
+  const [scoreModal, setScoreModal] = useState<{
+    isOpen: boolean
+    matchId: string
+    player1: any
+    player2: any
+    isEditing?: boolean
+    existingScore?: string
+  }>({
+    isOpen: false,
+    matchId: '',
+    player1: null,
+    player2: null,
+    isEditing: false,
+    existingScore: undefined
+  })
+
+  if (!tournamentData) {
+    return (
+      <div className="text-center py-8 text-slate-600">
+        No tournament data available
+      </div>
+    )
+  }
+
+  const { standings, matches, players } = tournamentData
+
+  const handleMatchClick = (match: any) => {
+    if (!isOwner || eventStatus !== 'in_progress') return
+    if (!match.player1 || !match.player2) return
+
+    const isEditing = !!match.winner
+    setScoreModal({
+      isOpen: true,
+      matchId: match.id,
+      player1: match.player1,
+      player2: match.player2,
+      isEditing,
+      existingScore: isEditing ? match.score : undefined
+    })
+  }
+
+  const handleScoreSubmit = (winnerId: string, score: string) => {
+    onMatchUpdate(scoreModal.matchId, winnerId, score)
+    setScoreModal({
+      isOpen: false,
+      matchId: '',
+      player1: null,
+      player2: null,
+      isEditing: false,
+      existingScore: undefined
+    })
+  }
+
+  return (
+    <>
+      <div className="space-y-6">
+        {/* Tab Navigation */}
+        <div className="flex space-x-1 bg-slate-200 p-1 rounded-lg">
+          <button
+            onClick={() => setActiveTab('standings')}
+            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+              activeTab === 'standings'
+                ? 'bg-white text-slate-800 shadow-sm'
+                : 'text-slate-600 hover:text-slate-800'
+            }`}
+          >
+            📊 Standings
+          </button>
+          <button
+            onClick={() => setActiveTab('schedule')}
+            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+              activeTab === 'schedule'
+                ? 'bg-white text-slate-800 shadow-sm'
+                : 'text-slate-600 hover:text-slate-800'
+            }`}
+          >
+            🗂️ Bracket
+          </button>
+        </div>
+
+        {/* Standings Tab */}
+        {activeTab === 'standings' && (
+          <div className="bg-white rounded-lg border border-slate-200">
+            <div className="px-6 py-4 border-b border-slate-200">
+              <h3 className="text-lg font-semibold text-slate-800">Current Standings</h3>
+              <p className="text-sm text-slate-600">
+                Rankings based on wins, then head-to-head results
+              </p>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-slate-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      Position
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      Player
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      Wins
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      Losses
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      Win %
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      Sets Won/Lost
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {standings?.map((player: any, index: number) => (
+                    <tr key={player.id} className={index === 0 ? 'bg-yellow-50' : ''}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          {index === 0 && (
+                            <span className="text-yellow-500 mr-2">👑</span>
+                          )}
+                          <span className="text-sm font-medium text-slate-900">
+                            #{index + 1}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mr-3">
+                            <span className="text-white font-semibold text-sm">
+                              {player.name.charAt(0).toUpperCase()}
+                            </span>
+                          </div>
+                          <div>
+                            <div className="text-sm font-medium text-slate-900">
+                              {player.name}
+                            </div>
+                            <div className="text-xs text-slate-500">
+                              {player.ntrp_level} NTRP
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
+                        {player.wins || 0}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
+                        {player.losses || 0}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
+                        {player.matches_played > 0 
+                          ? Math.round((player.wins / player.matches_played) * 100) 
+                          : 0}%
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
+                        {player.sets_won || 0} / {player.sets_lost || 0}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Bracket Tab */}
+        {activeTab === 'schedule' && (
+          <div className="space-y-4">
+            <div className="bg-white rounded-lg border border-slate-200">
+              <div className="px-6 py-4 border-b border-slate-200">
+                <h3 className="text-lg font-semibold text-slate-800">Round Robin Bracket</h3>
+                <p className="text-sm text-slate-600">
+                  {eventStatus === 'in_progress' && isOwner
+                    ? 'Click on match cells to record results'
+                    : 'Matrix view of all matches - each player faces every other player once'
+                  }
+                </p>
+              </div>
+              <div className="p-6">
+                <RoundRobinMatrix 
+                  players={players}
+                  matches={matches}
+                  isOwner={isOwner}
+                  eventStatus={eventStatus}
+                  onMatchClick={handleMatchClick}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Score Modal */}
+      <ScoreModal
+        isOpen={scoreModal.isOpen}
+        player1={scoreModal.player1}
+        player2={scoreModal.player2}
+        onSubmit={handleScoreSubmit}
+        onClose={() => setScoreModal({
+          isOpen: false,
+          matchId: '',
+          player1: null,
+          player2: null,
+          isEditing: false,
+          existingScore: undefined
+        })}
+        existingScore={scoreModal.existingScore}
+        isEditing={scoreModal.isEditing}
+      />
+    </>
+  )
+}
+
+// Challonge-style Round Robin Matrix Component
+function RoundRobinMatrix({ players, matches, isOwner, eventStatus, onMatchClick }: {
+  players: any[]
+  matches: any[]
+  isOwner: boolean
+  eventStatus: string
+  onMatchClick: (match: any) => void
+}) {
+  // Create a lookup map for matches between players
+  const matchLookup = new Map()
+  matches?.forEach(match => {
+    const key1 = `${match.player1?.id}-${match.player2?.id}`
+    const key2 = `${match.player2?.id}-${match.player1?.id}`
+    matchLookup.set(key1, match)
+    matchLookup.set(key2, match)
+  })
+
+  const getMatch = (player1Id: string, player2Id: string) => {
+    return matchLookup.get(`${player1Id}-${player2Id}`)
+  }
+
+  return (
+    <div className="overflow-x-auto">
+      <div className="min-w-full">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr>
+              <th className="w-32 h-12 border border-slate-300 bg-slate-100 text-xs font-medium text-slate-600 p-2">
+                Players
+              </th>
+              {players?.map(player => (
+                <th 
+                  key={player.id} 
+                  className="w-24 h-12 border border-slate-300 bg-slate-100 text-xs font-medium text-slate-600 p-1 text-center"
+                >
+                  <div className="truncate" title={player.name}>
+                    {player.name.length > 10 ? player.name.substring(0, 10) + '...' : player.name}
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {players?.map(rowPlayer => (
+              <tr key={rowPlayer.id}>
+                {/* Player name column */}
+                <td className="border border-slate-300 bg-slate-50 p-2 text-sm font-medium text-slate-800 truncate max-w-32">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-6 h-6 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center">
+                      <span className="text-white font-semibold text-xs">
+                        {rowPlayer.name.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <span className="truncate" title={rowPlayer.name}>
+                      {rowPlayer.name}
+                    </span>
+                  </div>
+                </td>
+                
+                {/* Match cells */}
+                {players?.map(colPlayer => (
+                  <td key={colPlayer.id} className="w-24 h-16 border border-slate-300 p-0">
+                    <MatchCell
+                      rowPlayer={rowPlayer}
+                      colPlayer={colPlayer}
+                      match={getMatch(rowPlayer.id, colPlayer.id)}
+                      isOwner={isOwner}
+                      eventStatus={eventStatus}
+                      onMatchClick={onMatchClick}
+                    />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
+// Individual cell in the matrix representing a match
+function MatchCell({ rowPlayer, colPlayer, match, isOwner, eventStatus, onMatchClick }: {
+  rowPlayer: any
+  colPlayer: any
+  match: any
+  isOwner: boolean
+  eventStatus: string
+  onMatchClick: (match: any) => void
+}) {
+  // Same player - diagonal cell
+  if (rowPlayer.id === colPlayer.id) {
+    return (
+      <div className="w-full h-full bg-slate-800 flex items-center justify-center">
+        <span className="text-white text-xs font-bold">●</span>
+      </div>
+    )
+  }
+
+  // No match found
+  if (!match) {
+    return (
+      <div className="w-full h-full bg-slate-100 flex items-center justify-center">
+        <span className="text-slate-400 text-xs">-</span>
+      </div>
+    )
+  }
+
+  const isRowPlayerWinner = match.winner === rowPlayer.id
+  const isColPlayerWinner = match.winner === colPlayer.id
+  const hasResult = !!match.winner
+
+  const canClick = isOwner && eventStatus === 'in_progress'
+
+  const handleClick = () => {
+    if (canClick) {
+      onMatchClick(match)
+    }
+  }
+
+  // Determine cell appearance based on match result
+  let cellContent
+  let cellClass = "w-full h-full flex flex-col items-center justify-center text-xs cursor-pointer hover:bg-slate-200 transition-colors"
+
+  if (hasResult) {
+    const isWalkover = match.score === 'W/O'
+    
+    if (isRowPlayerWinner) {
+      cellClass = "w-full h-full flex flex-col items-center justify-center text-xs bg-green-100 border border-green-300 cursor-pointer hover:bg-green-200 transition-colors"
+      cellContent = (
+        <>
+          <span className="text-green-800 font-bold">W</span>
+          {isWalkover ? (
+            <span className="text-green-700 text-xs leading-none mt-0.5 text-center">
+              Walkover
+            </span>
+          ) : match.score && (
+            <span className="text-green-700 text-xs leading-none mt-0.5 text-center">
+              {match.score.length > 10 ? match.score.substring(0, 10) + '...' : match.score}
+            </span>
+          )}
+        </>
+      )
+    } else if (isColPlayerWinner) {
+      cellClass = "w-full h-full flex flex-col items-center justify-center text-xs bg-red-100 border border-red-300 cursor-pointer hover:bg-red-200 transition-colors"
+      cellContent = (
+        <>
+          <span className="text-red-800 font-bold">L</span>
+          {isWalkover ? (
+            <span className="text-red-700 text-xs leading-none mt-0.5 text-center">
+              Walkover
+            </span>
+          ) : match.score && (
+            <span className="text-red-700 text-xs leading-none mt-0.5 text-center">
+              {match.score.length > 10 ? match.score.substring(0, 10) + '...' : match.score}
+            </span>
+          )}
+        </>
+      )
+    }
+  } else {
+    // No result yet
+    cellClass = "w-full h-full flex items-center justify-center text-xs bg-yellow-50 border border-yellow-200 cursor-pointer hover:bg-yellow-100 transition-colors"
+    cellContent = (
+      <span className="text-yellow-600 font-medium">vs</span>
+    )
+  }
+
+  if (!canClick) {
+    cellClass = cellClass.replace('cursor-pointer hover:bg-', 'cursor-default hover:bg-')
+  }
+
+  return (
+    <div 
+      className={cellClass}
+      onClick={handleClick}
+      title={
+        !canClick 
+          ? hasResult 
+            ? `${match.player1?.name} vs ${match.player2?.name} - ${match.score || 'Completed'}`
+            : `${match.player1?.name} vs ${match.player2?.name} - Match not started`
+          : hasResult
+            ? `Click to edit: ${match.player1?.name} vs ${match.player2?.name}`
+            : `Click to record: ${match.player1?.name} vs ${match.player2?.name}`
+      }
+    >
+      {cellContent}
     </div>
   )
 }

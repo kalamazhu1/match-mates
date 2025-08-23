@@ -140,6 +140,58 @@ function generateSingleEliminationBracket(participants: any[]) {
   return bracketData
 }
 
+// Generate round robin tournament
+function generateRoundRobinTournament(participants: any[]) {
+  if (participants.length < 3) {
+    throw new Error('Need at least 3 participants for a round robin tournament')
+  }
+
+  // Shuffle participants for random order
+  const shuffled = [...participants].sort(() => Math.random() - 0.5)
+  
+  // Generate all possible matches (every player plays every other player once)
+  const matches = []
+  let matchCounter = 1
+  
+  for (let i = 0; i < shuffled.length; i++) {
+    for (let j = i + 1; j < shuffled.length; j++) {
+      matches.push({
+        id: `rr-match-${matchCounter}`,
+        player1: shuffled[i],
+        player2: shuffled[j],
+        winner: null,
+        score: null,
+        loser: null
+      })
+      matchCounter++
+    }
+  }
+  
+  // Calculate initial standings (all players start with 0 wins/losses)
+  const standings = shuffled.map(player => ({
+    id: player.id,
+    name: player.name,
+    ntrp_level: player.ntrp_level,
+    wins: 0,
+    losses: 0,
+    matches_played: 0,
+    sets_won: 0,
+    sets_lost: 0,
+    games_won: 0,
+    games_lost: 0
+  }))
+
+  return {
+    format: 'round_robin',
+    participants: shuffled,
+    matches,
+    standings,
+    players: shuffled,
+    total_matches: matches.length,
+    completed_matches: 0
+  }
+}
+
 // Helper function to advance BYE winners through subsequent rounds
 function advanceByeWinners(bracketData: any) {
   // Only process the first round initially - higher rounds should only be filled
@@ -291,6 +343,9 @@ export async function POST(
     switch (format) {
       case 'single_elimination':
         bracketData = generateSingleEliminationBracket(participants)
+        break
+      case 'round_robin':
+        bracketData = generateRoundRobinTournament(participants)
         break
       default:
         return NextResponse.json(

@@ -173,6 +173,7 @@ export function RegistrationButton({
                 return (
                   <Button
                     variant="outline"
+                    size="sm"
                     onClick={handleCancelRegistration}
                     disabled={loading || !canCancel}
                     className={`w-full ${
@@ -211,6 +212,7 @@ export function RegistrationButton({
                 return (
                   <Button
                     variant="outline"
+                    size="sm"
                     onClick={handleCancelRegistration}
                     disabled={loading || !canCancel}
                     className={`w-full ${
@@ -262,6 +264,7 @@ export function RegistrationButton({
         <Button
           onClick={handleRegistration}
           disabled={loading}
+          size="sm"
           className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:shadow-lg"
         >
           {loading 
@@ -308,6 +311,7 @@ export function RegistrationButton({
     <div className="space-y-4">
       <Button
         disabled
+        size="sm"
         className="w-full bg-gray-300 text-gray-500 cursor-not-allowed"
       >
         Registration Not Available

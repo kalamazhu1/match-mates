@@ -151,208 +151,166 @@ export function EventAdminActions({
   const statusActions = getStatusActions()
 
   return (
-    <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <span className="text-orange-600">⚙️</span>
-            Event Management
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Current Status */}
-          <div className="p-3 bg-slate-50 rounded-lg">
-            <div className="text-sm text-slate-600 mb-1">Current Status</div>
-            <div className="font-medium text-slate-800 capitalize">
-              {event.status.replace('_', ' ')}
-            </div>
-          </div>
+    <div className="bg-white rounded-lg border border-slate-200 p-4 space-y-3">
+      {/* Header with Status */}
+      <div className="flex items-center justify-between">
+        <div className="text-sm font-medium text-slate-800">Event Management</div>
+        <span className={`px-2 py-1 rounded text-xs font-medium capitalize ${
+          event.status === 'open' ? 'bg-green-100 text-green-800' :
+          event.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
+          event.status === 'completed' ? 'bg-purple-100 text-purple-800' :
+          'bg-slate-100 text-slate-800'
+        }`}>
+          {event.status.replace('_', ' ')}
+        </span>
+      </div>
 
-          {/* Quick Stats */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="text-center p-2 bg-green-50 rounded">
-              <div className="text-lg font-bold text-green-800">
-                {event.registration_stats.approved_registrations}
-              </div>
-              <div className="text-xs text-green-600">Registered</div>
-            </div>
-            <div className="text-center p-2 bg-yellow-50 rounded">
-              <div className="text-lg font-bold text-yellow-800">
-                {event.registration_stats.pending_registrations}
-              </div>
-              <div className="text-xs text-yellow-600">Pending</div>
-            </div>
+      {/* Quick Stats */}
+      <div className="flex gap-2 text-xs">
+        <div className="flex-1 text-center p-2 bg-green-50 rounded">
+          <div className="font-bold text-green-800">{event.registration_stats.approved_registrations}</div>
+          <div className="text-green-600">Registered</div>
+        </div>
+        {event.registration_stats.pending_registrations > 0 && (
+          <div className="flex-1 text-center p-2 bg-yellow-50 rounded">
+            <div className="font-bold text-yellow-800">{event.registration_stats.pending_registrations}</div>
+            <div className="text-yellow-600">Pending</div>
           </div>
+        )}
+      </div>
 
-          {/* Status Change Dropdown */}
+      {/* Tournament Draws Warning */}
+      {event.format === 'single_elimination' && !hasDraws && !checkingDraws && (
+        <div className="p-2 bg-yellow-50 border border-yellow-200 rounded text-xs">
+          <div className="flex items-center">
+            <span className="text-yellow-600 mr-1">⚠️</span>
+            <span className="text-yellow-800">Tournament draws required before starting</span>
+          </div>
+        </div>
+      )}
+
+      {/* Action Buttons */}
+      <div className="space-y-2">
+        {/* Primary Action Button */}
+        {statusActions.length > 0 && (
+          <Button
+            variant={statusActions[0].variant}
+            size="sm"
+            className="w-full"
+            onClick={() => handleStatusChange(statusActions[0].status)}
+            disabled={isUpdating || statusActions[0].disabled}
+          >
+            {isUpdating ? 'Updating...' : statusActions[0].label}
+          </Button>
+        )}
+
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full"
+          onClick={() => router.push(`/events/${event.id}/manage`)}
+        >
+          📋 Manage Registrations
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full"
+          onClick={() => router.push(`/events/${event.id}/email`)}
+        >
+          📧 Email Participants
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full"
+          onClick={() => router.push(`/events/${event.id}/whatsapp`)}
+        >
+          💬 WhatsApp Participants
+        </Button>
+        
+        {event.format === 'single_elimination' && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full"
+            onClick={() => router.push(`/events/${event.id}/draws`)}
+          >
+            🏆 Tournament Draw
+          </Button>
+        )}
+        
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full"
+          onClick={() => router.push(`/events/${event.id}/edit`)}
+        >
+          ✏️ Edit Event
+        </Button>
+
+        {/* Status Change Dropdown */}
+        <select
+          className="w-full px-3 py-2 border border-slate-300 rounded text-sm"
+          value={event.status}
+          onChange={(e) => handleStatusChange(e.target.value)}
+          disabled={isUpdating}
+        >
+          <option value="open">Open</option>
+          <option value="full">Full</option>
+          <option value="in_progress">In Progress</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        
+        {!showDeleteConfirm ? (
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full border-red-300 text-red-600 hover:bg-red-50"
+            onClick={() => setShowDeleteConfirm(true)}
+          >
+            🗑️ Delete Event
+          </Button>
+        ) : (
           <div className="space-y-2">
-            <div className="text-sm text-slate-600 font-medium">Change Status</div>
-            <select
-              className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm"
-              value={event.status}
-              onChange={(e) => handleStatusChange(e.target.value)}
-              disabled={isUpdating}
-            >
-              <option value="open">Open - Accepting Registrations</option>
-              <option value="full">Full - Preparing the Event</option>
-              <option value="in_progress">In Progress - Event Started</option>
-              <option value="completed">Completed - Event Finished</option>
-              <option value="cancelled">Cancelled - Event Cancelled</option>
-            </select>
-          </div>
-
-          {/* Tournament Draws Warning */}
-          {event.format === 'single_elimination' && !hasDraws && !checkingDraws && (
-            <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <div className="flex items-start">
-                <span className="text-yellow-600 mr-2">⚠️</span>
-                <div>
-                  <div className="text-sm font-medium text-yellow-800">
-                    Tournament Draws Required
-                  </div>
-                  <div className="text-xs text-yellow-700 mt-1">
-                    Create tournament draws before starting this single elimination event.
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Quick Status Actions */}
-          {statusActions.length > 0 && (
-            <div className="space-y-2">
-              <div className="text-sm text-slate-600 font-medium">Quick Actions</div>
-              {statusActions.map((action) => (
-                <Button
-                  key={action.status}
-                  variant={action.variant}
-                  size="sm"
-                  className="w-full"
-                  onClick={() => handleStatusChange(action.status)}
-                  disabled={isUpdating || action.disabled}
-                >
-                  {isUpdating ? 'Updating...' : action.label}
-                </Button>
-              ))}
-            </div>
-          )}
-
-          {/* Management Actions */}
-          <div className="space-y-2 pt-2 border-t border-slate-200">
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full"
-              onClick={() => router.push(`/events/${event.id}/manage`)}
-            >
-              📋 Manage Registrations
-            </Button>
-            
-            {event.format === 'single_elimination' && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full"
-                onClick={() => {
-                  router.push(`/events/${event.id}/draws`)
-                  // Refresh draws status after user returns
-                  setTimeout(() => checkForDraws(), 1000)
-                }}
-              >
-                🏆 Tournament Draw
-              </Button>
-            )}
-            
-            {event.format === 'single_elimination' && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full"
-                onClick={() => router.push(`/events/${event.id}/leaderboard`)}
-              >
-                📊 Tournament Leaderboard
-              </Button>
-            )}
-            
-            {event.event_type === 'ladder' && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full"
-                onClick={() => router.push(`/events/${event.id}/ladder`)}
-              >
-                🪜 Ladder Rankings
-              </Button>
-            )}
-            
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full"
-              onClick={() => router.push(`/events/${event.id}/edit`)}
-            >
-              ✏️ Edit Event Details
-            </Button>
-            
-            {/* Delete Button */}
-            {!showDeleteConfirm ? (
+            <div className="text-xs text-red-600 text-center">Delete permanently?</div>
+            <div className="flex gap-2">
               <Button
                 variant="destructive"
                 size="sm"
-                className="w-full"
-                onClick={() => setShowDeleteConfirm(true)}
+                className="flex-1"
+                onClick={handleDeleteEvent}
+                disabled={isUpdating}
               >
-                🗑️ Delete Event
+                {isUpdating ? 'Deleting...' : 'Yes, Delete'}
               </Button>
-            ) : (
-              <div className="space-y-2">
-                <div className="text-xs text-red-600 text-center">
-                  Are you sure? This cannot be undone.
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    className="flex-1"
-                    onClick={handleDeleteEvent}
-                    disabled={isUpdating}
-                  >
-                    {isUpdating ? 'Deleting...' : 'Yes, Delete'}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => setShowDeleteConfirm(false)}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </div>
-            )}
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1"
+                onClick={() => setShowDeleteConfirm(false)}
+              >
+                Cancel
+              </Button>
+            </div>
           </div>
-        </CardContent>
-      </Card>
+        )}
+      </div>
 
-      {/* Admin Registration Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <span className="text-green-600">🎾</span>
-            Your Registration
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <RegistrationButton
-            eventId={event.id}
-            event={event}
-            userRegistration={userRegistration || null}
-            canRegister={canRegister || false}
-            registrationEligibility={registrationEligibility || { eligible: false, reason: 'Unable to check eligibility' }}
-            onRegistrationChange={onEventUpdate}
-          />
-        </CardContent>
-      </Card>
+      {/* Registration Section */}
+      <div className="pt-2 border-t border-slate-200">
+        <RegistrationButton
+          eventId={event.id}
+          event={event}
+          userRegistration={userRegistration || null}
+          canRegister={canRegister || false}
+          registrationEligibility={registrationEligibility || { eligible: false, reason: 'Unable to check eligibility' }}
+          onRegistrationChange={onEventUpdate}
+        />
+      </div>
     </div>
   )
 }

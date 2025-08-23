@@ -19,7 +19,11 @@ export const EVENT_TYPES = [
 
 export const TOURNAMENT_FORMATS = [
   { value: 'single_elimination', label: 'Single Elimination' },
-  { value: 'double_elimination', label: 'Double Elimination' },
+  { value: 'round_robin', label: 'Round Robin' }
+]
+
+export const ALL_FORMATS = [
+  { value: 'single_elimination', label: 'Single Elimination' },
   { value: 'round_robin', label: 'Round Robin' },
   { value: 'league_play', label: 'League Play' },
   { value: 'social_play', label: 'Social Play' }
@@ -40,14 +44,15 @@ export const SF_LOCATIONS = [
 ]
 
 interface MatchMatesSelectProps extends Omit<SelectProps, 'options'> {
-  type: 'ntrp' | 'eventType' | 'format' | 'location'
+  type: 'ntrp' | 'eventType' | 'format' | 'tournamentFormat' | 'location'
 }
 
 export function MatchMatesSelect({ type, ...props }: MatchMatesSelectProps) {
   const optionsMap = {
     ntrp: NTRP_LEVELS,
     eventType: EVENT_TYPES,
-    format: TOURNAMENT_FORMATS,
+    format: ALL_FORMATS,
+    tournamentFormat: TOURNAMENT_FORMATS,
     location: SF_LOCATIONS
   }
 

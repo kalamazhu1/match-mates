@@ -228,7 +228,7 @@ export default function ManageEventPage({ params }: ManageEventPageProps) {
                         <div className="text-sm text-slate-600">NTRP: {registration.user.ntrp_level}</div>
                       </div>
                       <div className="text-sm text-slate-500">
-                        Applied {formatDate(registration.created_at)}
+                        Applied {formatDate(registration.registered_at)}
                       </div>
                     </div>
                     
@@ -282,7 +282,7 @@ export default function ManageEventPage({ params }: ManageEventPageProps) {
                         <div className="text-sm text-slate-600">NTRP: {registration.user.ntrp_level}</div>
                       </div>
                       <div className="text-sm text-slate-500">
-                        Approved {formatDate(registration.updated_at)}
+                        Approved {formatDate(registration.approved_at || registration.registered_at)}
                       </div>
                     </div>
                   </div>

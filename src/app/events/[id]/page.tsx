@@ -90,10 +90,18 @@ interface LeaderboardData {
   tournament_complete: boolean
 }
 
+interface RoundRobinData {
+  standings: any[]
+  total_matches: number
+  completed_matches: number
+  tournament_complete: boolean
+}
+
 export default function EventPage({ params }: EventPageProps) {
   const [eventData, setEventData] = useState<EventData | null>(null)
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardData | null>(null)
   const [ladderData, setLadderData] = useState<LadderData | null>(null)
+  const [roundRobinData, setRoundRobinData] = useState<RoundRobinData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [eventId, setEventId] = useState<string | null>(null)
@@ -129,6 +137,11 @@ export default function EventPage({ params }: EventPageProps) {
       // If it's a ladder event, fetch ladder data
       if (data.event.event_type === 'ladder') {
         await fetchLadderData()
+      }
+      
+      // If it's a round robin tournament, fetch tournament data
+      if (data.event.format === 'round_robin') {
+        await fetchRoundRobinData()
       }
       
       setError('')
@@ -169,6 +182,31 @@ export default function EventPage({ params }: EventPageProps) {
     } catch (err) {
       console.error('Error fetching ladder:', err)
       // Don't show error for ladder fetch, just silently fail
+    }
+  }
+
+  const fetchRoundRobinData = async () => {
+    if (!eventId) return
+    
+    try {
+      const response = await fetch(`/api/events/${eventId}/draws`)
+      const data = await response.json()
+
+      if (response.ok && data.draws && data.draws.length > 0) {
+        const draw = data.draws[0]
+        if (draw.bracket_data && draw.bracket_data.format === 'round_robin') {
+          const bracketData = draw.bracket_data
+          setRoundRobinData({
+            standings: bracketData.standings || [],
+            total_matches: bracketData.total_matches || 0,
+            completed_matches: bracketData.completed_matches || 0,
+            tournament_complete: bracketData.completed_matches === bracketData.total_matches
+          })
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching round robin data:', err)
+      // Don't show error for round robin fetch, just silently fail
     }
   }
 
@@ -297,6 +335,109 @@ export default function EventPage({ params }: EventPageProps) {
             </div>
           </div>
         </div>
+
+        {/* Round Robin Standings Preview */}
+        {roundRobinData && event.format === 'round_robin' && roundRobinData.standings.length > 0 && (
+          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl shadow-sm border border-green-200 p-8 mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-bold text-slate-800 mb-2 flex items-center">
+                  🏆 Current Tournament Standings
+                </h2>
+                <p className="text-slate-600">
+                  {roundRobinData.tournament_complete 
+                    ? 'Final tournament results' 
+                    : `${roundRobinData.completed_matches} of ${roundRobinData.total_matches} matches completed`
+                  }
+                </p>
+              </div>
+              <Link
+                href={`/events/${event.id}/draws`}
+                className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              >
+                <span className="mr-2">🗂️</span>
+                View Full Bracket
+              </Link>
+            </div>
+
+            {/* Top 5 Players */}
+            <div className="bg-white rounded-lg p-6 mb-4">
+              <h3 className="text-lg font-semibold text-slate-800 mb-4">Top 5 Players</h3>
+              <div className="space-y-3">
+                {roundRobinData.standings.slice(0, 5).map((player, index) => (
+                  <div
+                    key={player.id}
+                    className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
+                      index === 0 
+                        ? 'bg-gradient-to-r from-yellow-100 to-yellow-200 border border-yellow-300' 
+                        : 'bg-slate-50 hover:bg-slate-100'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-4">
+                      {/* Position */}
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
+                        index === 0 
+                          ? 'bg-yellow-500 text-white' 
+                          : index === 1 
+                          ? 'bg-gray-400 text-white'
+                          : index === 2
+                          ? 'bg-orange-400 text-white'
+                          : 'bg-slate-300 text-slate-700'
+                      }`}>
+                        {index === 0 ? '👑' : index + 1}
+                      </div>
+                      
+                      {/* Player Info */}
+                      <div>
+                        <div className="font-medium text-slate-800">{player.name}</div>
+                        <div className="flex items-center gap-2 text-sm text-slate-600">
+                          <span className="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs font-medium">
+                            {player.ntrp_level} NTRP
+                          </span>
+                          <span className="text-xs">
+                            {player.wins}W-{player.losses}L ({player.matches_played > 0 ? Math.round((player.wins / player.matches_played) * 100) : 0}%)
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Sets Record */}
+                    <div className="text-right">
+                      <div className="font-bold text-lg text-slate-800">
+                        {player.sets_won || 0}-{player.sets_lost || 0}
+                      </div>
+                      <div className="text-xs text-slate-500">
+                        Sets
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Tournament Progress */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-white p-4 rounded-lg text-center shadow-sm">
+                <div className="text-2xl font-bold text-green-600">
+                  {roundRobinData.standings.length}
+                </div>
+                <div className="text-sm text-gray-600">Total Players</div>
+              </div>
+              <div className="bg-white p-4 rounded-lg text-center shadow-sm">
+                <div className="text-2xl font-bold text-blue-600">
+                  {roundRobinData.completed_matches}/{roundRobinData.total_matches}
+                </div>
+                <div className="text-sm text-gray-600">Matches Played</div>
+              </div>
+              <div className="bg-white p-4 rounded-lg text-center shadow-sm">
+                <div className="text-2xl font-bold text-purple-600">
+                  {roundRobinData.total_matches > 0 ? Math.round((roundRobinData.completed_matches / roundRobinData.total_matches) * 100) : 0}%
+                </div>
+                <div className="text-sm text-gray-600">Complete</div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Tournament Results - Only show for completed tournaments */}
         {leaderboardData && leaderboardData.tournament_complete && (
@@ -619,6 +760,42 @@ export default function EventPage({ params }: EventPageProps) {
                 <span className="mr-2">📊</span>
                 View Leaderboard
               </Link>
+            </div>
+          </div>
+        )}
+
+
+        {/* Round Robin Links */}
+        {event.format === 'round_robin' && (
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8">
+            <h2 className="text-xl font-semibold text-slate-800 mb-4">Round Robin Tournament</h2>
+            <p className="text-slate-600 mb-4">
+              {event.status === 'completed' 
+                ? 'This round robin tournament has been completed. View the final standings and match results.'
+                : event.status === 'in_progress'
+                ? 'View the tournament schedule, standings, and record match results in this round robin competition.'
+                : 'View the tournament schedule and participants. The tournament will begin when the organizer starts it.'
+              }
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link
+                href={`/events/${event.id}/draws`}
+                className="inline-flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >
+                <span className="mr-2">🏆</span>
+                {event.status === 'completed' ? 'View Final Results' : 'View Tournament Schedule & Standings'}
+              </Link>
+              
+              {event.status !== 'completed' && (
+                <Link
+                  href={`/events/${event.id}/leaderboard`}
+                  className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <span className="mr-2">📊</span>
+                  View Current Standings
+                </Link>
+              )}
             </div>
           </div>
         )}

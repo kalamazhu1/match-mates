@@ -25,7 +25,7 @@ interface FormState {
   title: string
   description: string
   event_type: 'tournament' | 'league' | 'social' | 'ladder' | ''
-  format: 'single_elimination' | 'double_elimination' | 'round_robin' | 'league_play' | 'social_play' | ''
+  format: 'single_elimination' | 'round_robin' | 'league_play' | 'social_play' | ''
   skill_level_min: '3.0' | '3.5' | '4.0' | '4.5' | '5.0' | '5.5' | ''
   skill_level_max: '3.0' | '3.5' | '4.0' | '4.5' | '5.0' | '5.5' | ''
   location: string
@@ -72,8 +72,8 @@ export function EventEditForm({ event, eventId }: EventEditFormProps) {
         description: event.description || '',
         event_type: event.event_type || '',
         format: event.format || '',
-        skill_level_min: event.skill_level_min || '',
-        skill_level_max: event.skill_level_max || '',
+        skill_level_min: (event.skill_level_min || '') as any,
+        skill_level_max: (event.skill_level_max || '') as any,
         location: event.location || '',
         date_start: event.date_start ? new Date(event.date_start).toISOString().slice(0, 16) : '',
         date_end: event.date_end ? new Date(event.date_end).toISOString().slice(0, 16) : '',
@@ -92,9 +92,18 @@ export function EventEditForm({ event, eventId }: EventEditFormProps) {
       [field]: value
     }
     
-    // If changing event type and it's not tournament, clear format
-    if (field === 'event_type' && value !== 'tournament') {
-      newFormData.format = 'social_play' // Default format for non-tournament events
+    // Auto-set format based on event type
+    if (field === 'event_type') {
+      if (value === 'tournament') {
+        // For tournaments, keep current format if valid, otherwise clear it
+        if (!['single_elimination', 'round_robin'].includes(formData.format)) {
+          newFormData.format = ''
+        }
+      } else if (value === 'league') {
+        newFormData.format = 'league_play'
+      } else if (value === 'social' || value === 'ladder') {
+        newFormData.format = 'social_play'
+      }
     }
     
     setFormData(newFormData)
@@ -225,12 +234,9 @@ export function EventEditForm({ event, eventId }: EventEditFormProps) {
     { value: 'social', label: 'Social Play' }
   ]
 
-  const formatOptions = [
+  const tournamentFormatOptions = [
     { value: 'single_elimination', label: 'Single Elimination' },
-    { value: 'double_elimination', label: 'Double Elimination' },
-    { value: 'round_robin', label: 'Round Robin' },
-    { value: 'league_play', label: 'League Play' },
-    { value: 'social_play', label: 'Social Play' }
+    { value: 'round_robin', label: 'Round Robin' }
   ]
 
   const skillLevelOptions = [
@@ -250,7 +256,7 @@ export function EventEditForm({ event, eventId }: EventEditFormProps) {
           <CardTitle>Basic Information</CardTitle>
         </CardHeader>
         <CardContent>
-          <FormSection className="space-y-6">
+          <FormSection title="" className="space-y-6">
             <Input
               label="Event Title"
               placeholder="e.g., SF Summer Tennis Tournament"
@@ -273,19 +279,19 @@ export function EventEditForm({ event, eventId }: EventEditFormProps) {
             <div className="grid md:grid-cols-2 gap-6">
               <MatchMatesSelect
                 label="Event Type"
-                options={eventTypeOptions}
+                type="eventType"
                 value={formData.event_type}
-                onChange={(value) => handleInputChange('event_type', value)}
+                onChange={(e) => handleInputChange('event_type', e.target.value)}
                 error={errors.event_type}
                 required
               />
 
               {formData.event_type === 'tournament' && (
                 <MatchMatesSelect
-                  label="Format"
-                  options={formatOptions}
+                  label="Tournament Format"
+                  type="tournamentFormat"
                   value={formData.format}
-                  onChange={(value) => handleInputChange('format', value)}
+                  onChange={(e) => handleInputChange('format', e.target.value)}
                   error={errors.format}
                   required
                 />
@@ -301,22 +307,22 @@ export function EventEditForm({ event, eventId }: EventEditFormProps) {
           <CardTitle>Skill Level & Participants</CardTitle>
         </CardHeader>
         <CardContent>
-          <FormSection className="space-y-6">
+          <FormSection title="" className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               <MatchMatesSelect
                 label="Minimum Skill Level"
-                options={skillLevelOptions}
+                type="ntrp"
                 value={formData.skill_level_min}
-                onChange={(value) => handleInputChange('skill_level_min', value)}
+                onChange={(e) => handleInputChange('skill_level_min', e.target.value)}
                 error={errors.skill_level_min}
                 required
               />
 
               <MatchMatesSelect
                 label="Maximum Skill Level"
-                options={skillLevelOptions}
+                type="ntrp"
                 value={formData.skill_level_max}
-                onChange={(value) => handleInputChange('skill_level_max', value)}
+                onChange={(e) => handleInputChange('skill_level_max', e.target.value)}
                 error={errors.skill_level_max}
                 required
               />
@@ -356,7 +362,7 @@ export function EventEditForm({ event, eventId }: EventEditFormProps) {
           <CardTitle>Location & Schedule</CardTitle>
         </CardHeader>
         <CardContent>
-          <FormSection className="space-y-6">
+          <FormSection title="" className="space-y-6">
             <Input
               label="Location"
               placeholder="e.g., Golden Gate Park Tennis Center, San Francisco"
@@ -368,26 +374,29 @@ export function EventEditForm({ event, eventId }: EventEditFormProps) {
 
             <div className="grid md:grid-cols-2 gap-6">
               <DateTimeInput
+                type="datetime-local"
                 label="Event Start Date & Time"
                 value={formData.date_start}
-                onChange={(value) => handleInputChange('date_start', value)}
+                onChange={(e) => handleInputChange('date_start', e.target.value)}
                 error={errors.date_start}
                 required
               />
 
               <DateTimeInput
+                type="datetime-local"
                 label="Event End Date & Time"
                 value={formData.date_end}
-                onChange={(value) => handleInputChange('date_end', value)}
+                onChange={(e) => handleInputChange('date_end', e.target.value)}
                 error={errors.date_end}
                 required
               />
             </div>
 
             <DateTimeInput
+              type="datetime-local"
               label="Registration Deadline"
               value={formData.registration_deadline}
-              onChange={(value) => handleInputChange('registration_deadline', value)}
+              onChange={(e) => handleInputChange('registration_deadline', e.target.value)}
               error={errors.registration_deadline}
               required
             />
@@ -401,7 +410,7 @@ export function EventEditForm({ event, eventId }: EventEditFormProps) {
           <CardTitle>Communication Groups (Optional)</CardTitle>
         </CardHeader>
         <CardContent>
-          <FormSection className="space-y-6">
+          <FormSection title="" className="space-y-6">
             <Input
               label="WhatsApp Group Invite Link"
               placeholder="https://chat.whatsapp.com/..."

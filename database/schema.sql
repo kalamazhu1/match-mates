@@ -18,7 +18,7 @@ CREATE TABLE public.events (
   title TEXT NOT NULL,
   description TEXT,
   event_type TEXT NOT NULL CHECK (event_type IN ('tournament', 'league', 'social', 'ladder')),
-  format TEXT NOT NULL CHECK (format IN ('single_elimination', 'double_elimination', 'round_robin', 'league_play', 'social_play')),
+  format TEXT NOT NULL CHECK (format IN ('single_elimination', 'round_robin', 'league_play', 'social_play')),
   skill_level_min TEXT NOT NULL CHECK (skill_level_min IN ('3.0', '3.5', '4.0', '4.5', '5.0', '5.5')),
   skill_level_max TEXT NOT NULL CHECK (skill_level_max IN ('3.0', '3.5', '4.0', '4.5', '5.0', '5.5')),
   location TEXT NOT NULL,

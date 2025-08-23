@@ -4,7 +4,7 @@ export const createEventSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100, 'Title must be less than 100 characters'),
   description: z.string().optional(),
   event_type: z.enum(['tournament', 'league', 'social', 'ladder']),
-  format: z.enum(['single_elimination', 'double_elimination', 'round_robin', 'league_play', 'social_play']),
+  format: z.enum(['single_elimination', 'round_robin', 'league_play', 'social_play']),
   skill_level_min: z.enum(['3.0', '3.5', '4.0', '4.5', '5.0', '5.5']),
   skill_level_max: z.enum(['3.0', '3.5', '4.0', '4.5', '5.0', '5.5']),
   location: z.string().min(1, 'Location is required').max(200, 'Location must be less than 200 characters'),
@@ -52,11 +52,23 @@ export const createEventSchema = z.object({
 }).refine((data) => {
   // For tournaments, format is required and must be a tournament format
   if (data.event_type === 'tournament') {
-    return ['single_elimination', 'double_elimination', 'round_robin'].includes(data.format)
+    return ['single_elimination', 'round_robin'].includes(data.format)
+  }
+  // For leagues, format should be league_play
+  if (data.event_type === 'league') {
+    return data.format === 'league_play'
+  }
+  // For social events, format should be social_play
+  if (data.event_type === 'social') {
+    return data.format === 'social_play'
+  }
+  // For ladder events, format should be social_play (no specific ladder format)
+  if (data.event_type === 'ladder') {
+    return data.format === 'social_play'
   }
   return true
 }, {
-  message: 'Tournament events require a valid tournament format',
+  message: 'Event format must match the selected event type',
   path: ['format']
 })
 
